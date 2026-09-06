@@ -1,0 +1,31 @@
+{
+  "manifest_version": "1.0.0",
+  "release_version": "0.24.0",
+  "release_tag": "v0.24.0-testnet",
+  "git_commit": "c89f1a2e",
+  "build_timestamp": "2026-08-30T18:14:52Z",
+  "network_target": "testnet",
+  "environment": "staging",
+  "database_revision": "v24_postgres_security",
+  "race_engine_version": "v1.0.0",
+  "scoring_config_hash": "9a677bf49f7ea0675b09c94c68e6c3fec3d637ec787c726409298f890821e826",
+  "packs_config_hash": "90d2007d82ca3aa7e9bc2ed8f8239b6ae99855eb793e1dc20f9efcf74e8c4a7d",
+  "artifacts": {
+    "backend_source_digest": "7a1178204a3a2ff1b3fb4874d26e21dc96af7d34e1f8df9367b7215fc77bd4ad",
+    "contract_source_digest": "42e89555c2a47d6b274e9d0c485ad784768a2e325deba3a76811897617abe6bc",
+    "frontend_build_digest": "sha256:8f4c2e9b110a",
+    "docker_image_digest": "sha256:3ce60de2b92d69169e7ded6945569b28f12d88ecf4c003c8dff8c7202a278b7d"
+  },
+  "governance": {
+    "multisig_council_address": "7WZ2E4G6H7I8J9K0L1M2N3O4P5Q6R7S8T9U0V1W2X3Y4Z5A6B7C8D9E0F1",
+    "threshold": "2-of-3",
+    "contract_upgrade_policy": "EXPLICIT_MULTISIG_APPROVAL_REQUIRED"
+  },
+  "quality_gates": {
+    "lint_pass": true,
+    "unit_tests_pass": true,
+    "postgres_concurrency_pass": true,
+    "security_adversarial_pass": true,
+    "mainnet_guard_pass": true
+  }
+}

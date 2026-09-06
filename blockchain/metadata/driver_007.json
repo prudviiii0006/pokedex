@@ -1,0 +1,44 @@
+{
+  "name": "AlgoRacer #007",
+  "description": "Phantom Speed \u2014 An elusive qualifier capable of setting track sector records.",
+  "image": "ipfs://bafybeic527p2j4f2e5z7e7t6c5b2r4n3k6l5o4p3q2r1s0t/driver_007.png",
+  "image_mimetype": "image/png",
+  "external_url": "https://algoracers.io/garage/007",
+  "properties": {
+    "driver_id": "007",
+    "driver_name": "Phantom Speed",
+    "team": "Veloce Vanguard",
+    "generation": "Genesis (Gen 0)",
+    "season": "2026"
+  },
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Epic"
+    },
+    {
+      "trait_type": "Speed",
+      "value": 94
+    },
+    {
+      "trait_type": "Qualifying",
+      "value": 96
+    },
+    {
+      "trait_type": "Racecraft",
+      "value": 88
+    },
+    {
+      "trait_type": "Overtaking",
+      "value": 91
+    },
+    {
+      "trait_type": "Wet Weather",
+      "value": 85
+    },
+    {
+      "trait_type": "Consistency",
+      "value": 90
+    }
+  ]
+}

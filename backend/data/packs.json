@@ -1,0 +1,30 @@
+{
+  "basic": {
+    "id": "basic",
+    "name": "Basic Pack",
+    "price": 2,
+    "currency": "USDC",
+    "reward_count": 1,
+    "description": "Standard entry-level driver pack with solid rookie and seasoned contenders.",
+    "rarities": {
+      "Common": 65,
+      "Rare": 25,
+      "Epic": 9,
+      "Legendary": 1
+    }
+  },
+  "premium": {
+    "id": "premium",
+    "name": "Premium Pack",
+    "price": 10,
+    "currency": "USDC",
+    "reward_count": 1,
+    "description": "High-tier apex pack boasting heavily boosted odds for Rare, Epic, and Legendary drivers.",
+    "rarities": {
+      "Common": 20,
+      "Rare": 40,
+      "Epic": 30,
+      "Legendary": 10
+    }
+  }
+}

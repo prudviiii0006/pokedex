@@ -1,0 +1,44 @@
+{
+  "name": "AlgoRacer #008",
+  "description": "Orbit Blaze \u2014 A solid mid-field contender with exceptional race start reaction times.",
+  "image": "ipfs://bafybeic527p2j4f2e5z7e7t6c5b2r4n3k6l5o4p3q2r1s0t/driver_008.png",
+  "image_mimetype": "image/png",
+  "external_url": "https://algoracers.io/garage/008",
+  "properties": {
+    "driver_id": "008",
+    "driver_name": "Orbit Blaze",
+    "team": "Quantum Motorsport",
+    "generation": "Genesis (Gen 0)",
+    "season": "2026"
+  },
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Common"
+    },
+    {
+      "trait_type": "Speed",
+      "value": 70
+    },
+    {
+      "trait_type": "Qualifying",
+      "value": 72
+    },
+    {
+      "trait_type": "Racecraft",
+      "value": 69
+    },
+    {
+      "trait_type": "Overtaking",
+      "value": 71
+    },
+    {
+      "trait_type": "Wet Weather",
+      "value": 65
+    },
+    {
+      "trait_type": "Consistency",
+      "value": 73
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "name": "AlgoRacer #004",
+  "description": "Turbo Vale \u2014 A rising rookie known for brave late-braking maneuvers.",
+  "image": "ipfs://bafybeic527p2j4f2e5z7e7t6c5b2r4n3k6l5o4p3q2r1s0t/driver_004.png",
+  "image_mimetype": "image/png",
+  "external_url": "https://algoracers.io/garage/004",
+  "properties": {
+    "driver_id": "004",
+    "driver_name": "Turbo Vale",
+    "team": "Ignite Syndicate",
+    "generation": "Genesis (Gen 0)",
+    "season": "2026"
+  },
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Common"
+    },
+    {
+      "trait_type": "Speed",
+      "value": 72
+    },
+    {
+      "trait_type": "Qualifying",
+      "value": 69
+    },
+    {
+      "trait_type": "Racecraft",
+      "value": 71
+    },
+    {
+      "trait_type": "Overtaking",
+      "value": 74
+    },
+    {
+      "trait_type": "Wet Weather",
+      "value": 66
+    },
+    {
+      "trait_type": "Consistency",
+      "value": 68
+    }
+  ]
+}

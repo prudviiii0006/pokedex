@@ -1,0 +1,44 @@
+{
+  "name": "AlgoRacer #003",
+  "description": "Apex Storm \u2014 A legendary Grand Prix champion with unmatched wet-weather mastery.",
+  "image": "ipfs://bafybeic527p2j4f2e5z7e7t6c5b2r4n3k6l5o4p3q2r1s0t/driver_003.png",
+  "image_mimetype": "image/png",
+  "external_url": "https://algoracers.io/garage/003",
+  "properties": {
+    "driver_id": "003",
+    "driver_name": "Apex Storm",
+    "team": "Veloce Vanguard",
+    "generation": "Genesis (Gen 0)",
+    "season": "2026"
+  },
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Legendary"
+    },
+    {
+      "trait_type": "Speed",
+      "value": 97
+    },
+    {
+      "trait_type": "Qualifying",
+      "value": 98
+    },
+    {
+      "trait_type": "Racecraft",
+      "value": 96
+    },
+    {
+      "trait_type": "Overtaking",
+      "value": 95
+    },
+    {
+      "trait_type": "Wet Weather",
+      "value": 99
+    },
+    {
+      "trait_type": "Consistency",
+      "value": 97
+    }
+  ]
+}

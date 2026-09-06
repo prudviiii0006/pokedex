@@ -1,0 +1,44 @@
+{
+  "name": "AlgoRacer #009",
+  "description": "Silver Torque \u2014 A defensive wall on narrow tracks who rarely concedes positions.",
+  "image": "ipfs://bafybeic527p2j4f2e5z7e7t6c5b2r4n3k6l5o4p3q2r1s0t/driver_009.png",
+  "image_mimetype": "image/png",
+  "external_url": "https://algoracers.io/garage/009",
+  "properties": {
+    "driver_id": "009",
+    "driver_name": "Silver Torque",
+    "team": "Ignite Syndicate",
+    "generation": "Genesis (Gen 0)",
+    "season": "2026"
+  },
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Rare"
+    },
+    {
+      "trait_type": "Speed",
+      "value": 81
+    },
+    {
+      "trait_type": "Qualifying",
+      "value": 79
+    },
+    {
+      "trait_type": "Racecraft",
+      "value": 86
+    },
+    {
+      "trait_type": "Overtaking",
+      "value": 77
+    },
+    {
+      "trait_type": "Wet Weather",
+      "value": 82
+    },
+    {
+      "trait_type": "Consistency",
+      "value": 83
+    }
+  ]
+}

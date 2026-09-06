@@ -1,0 +1,205 @@
+{
+  "collection_name": "AlgoRacers Genesis Drivers",
+  "standard": "ARC-3",
+  "cid_version": 1,
+  "codec": "raw",
+  "drivers": {
+    "driver_001": {
+      "driver_id": "001",
+      "driver_name": "Velocity One",
+      "rarity": "Rare",
+      "image_cid": "bafkreigkhqy5zviu37aealy6orsw7pfqm5xyuwhmxz4fenashribcnqy4q",
+      "image_uri": "ipfs://bafkreigkhqy5zviu37aealy6orsw7pfqm5xyuwhmxz4fenashribcnqy4q",
+      "metadata_cid": "bafkreia3vnoeexpsbnilmcjrjtsd3bomvsbk4h7ufmgnugypcrfqoooj4u",
+      "metadata_uri": "ipfs://bafkreia3vnoeexpsbnilmcjrjtsd3bomvsbk4h7ufmgnugypcrfqoooj4u#arc3",
+      "sha256_hash": "1bab5c425df20b50b609314ce43d85ccac82ae1ff42b0cda1b0f144b0739c9e5",
+      "byte_size": 695
+    },
+    "driver_002": {
+      "driver_id": "002",
+      "driver_name": "Nova Rush",
+      "rarity": "Epic",
+      "image_cid": "bafkreiaka3ztcnnr4qkpbfwrf7nzpdwifwpl2ioqe6inwe56se2jo55xuu",
+      "image_uri": "ipfs://bafkreiaka3ztcnnr4qkpbfwrf7nzpdwifwpl2ioqe6inwe56se2jo55xuu",
+      "metadata_cid": "bafkreibsqx3j4gzqg733gpbuwme3vshcfksajz5l6zpxc2zurroykksjpa",
+      "metadata_uri": "ipfs://bafkreibsqx3j4gzqg733gpbuwme3vshcfksajz5l6zpxc2zurroykksjpa#arc3",
+      "sha256_hash": "3285f69e1b3037f7b33c34b309bac8e22aa404e7abf65f716b348c5d852a4978",
+      "byte_size": 689
+    },
+    "driver_003": {
+      "driver_id": "003",
+      "driver_name": "Apex Storm",
+      "rarity": "Legendary",
+      "image_cid": "bafkreibcow76r2q5iwselsrqdc4zuljqhtybvgyyrdfvrvpxrox7vsxvwe",
+      "image_uri": "ipfs://bafkreibcow76r2q5iwselsrqdc4zuljqhtybvgyyrdfvrvpxrox7vsxvwe",
+      "metadata_cid": "bafkreihbyjo4n5fbsedbegpgfll74r2mqujcon6dw7nrgavfkmy4u7d2ce",
+      "metadata_uri": "ipfs://bafkreihbyjo4n5fbsedbegpgfll74r2mqujcon6dw7nrgavfkmy4u7d2ce#arc3",
+      "sha256_hash": "e1c25dc6f4a191061219e62ad7fe474c85122737c3b7db1302a55331ca7c7a11",
+      "byte_size": 701
+    },
+    "driver_004": {
+      "driver_id": "004",
+      "driver_name": "Turbo Vale",
+      "rarity": "Common",
+      "image_cid": "bafkreib7jbm4ferkydlqffpqcnu3iuu4wy7upqmnhtnm7lzxbn4qowpmrm",
+      "image_uri": "ipfs://bafkreib7jbm4ferkydlqffpqcnu3iuu4wy7upqmnhtnm7lzxbn4qowpmrm",
+      "metadata_cid": "bafkreibyv547t5dcrqp3bs64ds5vontbx6d56sh27xq3v27wynhshrnfm4",
+      "metadata_uri": "ipfs://bafkreibyv547t5dcrqp3bs64ds5vontbx6d56sh27xq3v27wynhshrnfm4#arc3",
+      "sha256_hash": "38af79f9f4628c1fb0cbdc1cbb573661bf87df48fafde1baebf6c34f23c5a567",
+      "byte_size": 687
+    },
+    "driver_005": {
+      "driver_id": "005",
+      "driver_name": "Crimson Vector",
+      "rarity": "Rare",
+      "image_cid": "bafkreicukiqewaifri7j77heqe4x7iymsjmxcri23epgjfshuisyedrxfe",
+      "image_uri": "ipfs://bafkreicukiqewaifri7j77heqe4x7iymsjmxcri23epgjfshuisyedrxfe",
+      "metadata_cid": "bafkreibcl2bdut72au2l6ylrcuveoylpuvqe4coaxueprgwj3llretoolm",
+      "metadata_uri": "ipfs://bafkreibcl2bdut72au2l6ylrcuveoylpuvqe4coaxueprgwj3llretoolm#arc3",
+      "sha256_hash": "225e823a4ffa0534bf6171152a47616fa5604e09c0bd08f89ac9dad7124dce5b",
+      "byte_size": 696
+    },
+    "driver_006": {
+      "driver_id": "006",
+      "driver_name": "Neon Racer",
+      "rarity": "Common",
+      "image_cid": "bafkreihb65namicznqq2ntagbbulipzajapyh7zrhv6fw2jewyetm3x4py",
+      "image_uri": "ipfs://bafkreihb65namicznqq2ntagbbulipzajapyh7zrhv6fw2jewyetm3x4py",
+      "metadata_cid": "bafkreigaaulji36xmfj5wlwdfiseq27uvz52oncybgr2cctowksl35naja",
+      "metadata_uri": "ipfs://bafkreigaaulji36xmfj5wlwdfiseq27uvz52oncybgr2cctowksl35naja#arc3",
+      "sha256_hash": "c00516946fd76153db2ec32a24486bf4ae7ba7345809a3a10a6eb2a4bdf5a048",
+      "byte_size": 685
+    },
+    "driver_007": {
+      "driver_id": "007",
+      "driver_name": "Phantom Speed",
+      "rarity": "Epic",
+      "image_cid": "bafkreiciiwsqe2mkzx65kdhbfckokewm6ygsnxi6erydaq2toodnvlctcm",
+      "image_uri": "ipfs://bafkreiciiwsqe2mkzx65kdhbfckokewm6ygsnxi6erydaq2toodnvlctcm",
+      "metadata_cid": "bafkreifbsyl3xfdr5mnqurgsri26qhxevdknluz7fvzkkffieg43fujonu",
+      "metadata_uri": "ipfs://bafkreifbsyl3xfdr5mnqurgsri26qhxevdknluz7fvzkkffieg43fujonu#arc3",
+      "sha256_hash": "a19617bb9471eb1b0a44d28a35e81ee4a8d4d5d33f2d72a514a821b9b2d12e6d",
+      "byte_size": 696
+    },
+    "driver_008": {
+      "driver_id": "008",
+      "driver_name": "Orbit Blaze",
+      "rarity": "Common",
+      "image_cid": "bafkreihgedzdyehhq7kaqvxsgcbxrlbw5lvo7t52n2t6xe3z7plrjzssya",
+      "image_uri": "ipfs://bafkreihgedzdyehhq7kaqvxsgcbxrlbw5lvo7t52n2t6xe3z7plrjzssya",
+      "metadata_cid": "bafkreichprk2azgbfzq7wqqkqbv6ybrf3wy26kpceipx6ktnjvszq5ci4i",
+      "metadata_uri": "ipfs://bafkreichprk2azgbfzq7wqqkqbv6ybrf3wy26kpceipx6ktnjvszq5ci4i#arc3",
+      "sha256_hash": "477c55a064c12e61fb420a806bec0625ddb1af29e2221f7f2a6d4d65987448e2",
+      "byte_size": 707
+    },
+    "driver_009": {
+      "driver_id": "009",
+      "driver_name": "Silver Torque",
+      "rarity": "Rare",
+      "image_cid": "bafkreia5uudrqiy5lrl5qn3xsuztddv7tiotadkcvpyxxkeijql4nb75r4",
+      "image_uri": "ipfs://bafkreia5uudrqiy5lrl5qn3xsuztddv7tiotadkcvpyxxkeijql4nb75r4",
+      "metadata_cid": "bafkreid5l5krezuyndmrfxae5fngzuksawvr2ihinrusdnlsxo6ly2hqoe",
+      "metadata_uri": "ipfs://bafkreid5l5krezuyndmrfxae5fngzuksawvr2ihinrusdnlsxo6ly2hqoe#arc3",
+      "sha256_hash": "7d5f5512669868d912dc04e95a6cd15205ab1d20e86c6921b572bbbcbc68f071",
+      "byte_size": 700
+    },
+    "driver_010": {
+      "driver_id": "010",
+      "driver_name": "Nitro Zenith",
+      "rarity": "Legendary",
+      "image_cid": "bafkreie6a2ydpqvvh4jfi2tnvzkxaotz6lm3luzkc732lqwzemta6b4ef4",
+      "image_uri": "ipfs://bafkreie6a2ydpqvvh4jfi2tnvzkxaotz6lm3luzkc732lqwzemta6b4ef4",
+      "metadata_cid": "bafkreiatejhahxcbm52qctpmwwo3lytjtyuipzoge7uxblpsi2uewpsalu",
+      "metadata_uri": "ipfs://bafkreiatejhahxcbm52qctpmwwo3lytjtyuipzoge7uxblpsi2uewpsalu#arc3",
+      "sha256_hash": "13224e03dc416775014decb59db5e2699e2887e5c627e970adf246a84b3e405d",
+      "byte_size": 701
+    }
+  },
+  "manifest_cid": "bafkreifsqe6udts4dobdj546wys4a6dty5rqrdqiu5zknkzedfsoqtyeai",
+  "collection_version": 1,
+  "collection_root": "8319631f00fd8d33feff63449db674f5be2f4f2ca438f6866d7c585c24db467a",
+  "leaf_count": 10,
+  "tree_scheme": "ALGORACERS_LEAF_NODE_V1",
+  "canonical_records": [
+    {
+      "driver_id": "001",
+      "driver_name": "Velocity One",
+      "rarity": "Rare",
+      "metadata_cid": "bafkreia3vnoeexpsbnilmcjrjtsd3bomvsbk4h7ufmgnugypcrfqoooj4u",
+      "image_cid": "bafkreigkhqy5zviu37aealy6orsw7pfqm5xyuwhmxz4fenashribcnqy4q",
+      "sha256_hash": "1bab5c425df20b50b609314ce43d85ccac82ae1ff42b0cda1b0f144b0739c9e5"
+    },
+    {
+      "driver_id": "002",
+      "driver_name": "Nova Rush",
+      "rarity": "Epic",
+      "metadata_cid": "bafkreibsqx3j4gzqg733gpbuwme3vshcfksajz5l6zpxc2zurroykksjpa",
+      "image_cid": "bafkreiaka3ztcnnr4qkpbfwrf7nzpdwifwpl2ioqe6inwe56se2jo55xuu",
+      "sha256_hash": "3285f69e1b3037f7b33c34b309bac8e22aa404e7abf65f716b348c5d852a4978"
+    },
+    {
+      "driver_id": "003",
+      "driver_name": "Apex Storm",
+      "rarity": "Legendary",
+      "metadata_cid": "bafkreihbyjo4n5fbsedbegpgfll74r2mqujcon6dw7nrgavfkmy4u7d2ce",
+      "image_cid": "bafkreibcow76r2q5iwselsrqdc4zuljqhtybvgyyrdfvrvpxrox7vsxvwe",
+      "sha256_hash": "e1c25dc6f4a191061219e62ad7fe474c85122737c3b7db1302a55331ca7c7a11"
+    },
+    {
+      "driver_id": "004",
+      "driver_name": "Turbo Vale",
+      "rarity": "Common",
+      "metadata_cid": "bafkreibyv547t5dcrqp3bs64ds5vontbx6d56sh27xq3v27wynhshrnfm4",
+      "image_cid": "bafkreib7jbm4ferkydlqffpqcnu3iuu4wy7upqmnhtnm7lzxbn4qowpmrm",
+      "sha256_hash": "38af79f9f4628c1fb0cbdc1cbb573661bf87df48fafde1baebf6c34f23c5a567"
+    },
+    {
+      "driver_id": "005",
+      "driver_name": "Crimson Vector",
+      "rarity": "Rare",
+      "metadata_cid": "bafkreibcl2bdut72au2l6ylrcuveoylpuvqe4coaxueprgwj3llretoolm",
+      "image_cid": "bafkreicukiqewaifri7j77heqe4x7iymsjmxcri23epgjfshuisyedrxfe",
+      "sha256_hash": "225e823a4ffa0534bf6171152a47616fa5604e09c0bd08f89ac9dad7124dce5b"
+    },
+    {
+      "driver_id": "006",
+      "driver_name": "Neon Racer",
+      "rarity": "Common",
+      "metadata_cid": "bafkreigaaulji36xmfj5wlwdfiseq27uvz52oncybgr2cctowksl35naja",
+      "image_cid": "bafkreihb65namicznqq2ntagbbulipzajapyh7zrhv6fw2jewyetm3x4py",
+      "sha256_hash": "c00516946fd76153db2ec32a24486bf4ae7ba7345809a3a10a6eb2a4bdf5a048"
+    },
+    {
+      "driver_id": "007",
+      "driver_name": "Phantom Speed",
+      "rarity": "Epic",
+      "metadata_cid": "bafkreifbsyl3xfdr5mnqurgsri26qhxevdknluz7fvzkkffieg43fujonu",
+      "image_cid": "bafkreiciiwsqe2mkzx65kdhbfckokewm6ygsnxi6erydaq2toodnvlctcm",
+      "sha256_hash": "a19617bb9471eb1b0a44d28a35e81ee4a8d4d5d33f2d72a514a821b9b2d12e6d"
+    },
+    {
+      "driver_id": "008",
+      "driver_name": "Orbit Blaze",
+      "rarity": "Common",
+      "metadata_cid": "bafkreichprk2azgbfzq7wqqkqbv6ybrf3wy26kpceipx6ktnjvszq5ci4i",
+      "image_cid": "bafkreihgedzdyehhq7kaqvxsgcbxrlbw5lvo7t52n2t6xe3z7plrjzssya",
+      "sha256_hash": "477c55a064c12e61fb420a806bec0625ddb1af29e2221f7f2a6d4d65987448e2"
+    },
+    {
+      "driver_id": "009",
+      "driver_name": "Silver Torque",
+      "rarity": "Rare",
+      "metadata_cid": "bafkreid5l5krezuyndmrfxae5fngzuksawvr2ihinrusdnlsxo6ly2hqoe",
+      "image_cid": "bafkreia5uudrqiy5lrl5qn3xsuztddv7tiotadkcvpyxxkeijql4nb75r4",
+      "sha256_hash": "7d5f5512669868d912dc04e95a6cd15205ab1d20e86c6921b572bbbcbc68f071"
+    },
+    {
+      "driver_id": "010",
+      "driver_name": "Nitro Zenith",
+      "rarity": "Legendary",
+      "metadata_cid": "bafkreiatejhahxcbm52qctpmwwo3lytjtyuipzoge7uxblpsi2uewpsalu",
+      "image_cid": "bafkreie6a2ydpqvvh4jfi2tnvzkxaotz6lm3luzkc732lqwzemta6b4ef4",
+      "sha256_hash": "13224e03dc416775014decb59db5e2699e2887e5c627e970adf246a84b3e405d"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+[
+  {
+    "id": "nova_circuit",
+    "name": "Nova Circuit",
+    "track_type": "high_speed",
+    "weather": "dry",
+    "overtaking_difficulty": "medium",
+    "description": "High-velocity power circuit featuring long drafting straights and sweeping parabolic curves.",
+    "stat_weights": {
+      "Speed": 0.35,
+      "Racecraft": 0.20,
+      "Overtaking": 0.15,
+      "Consistency": 0.15,
+      "Qualifying": 0.10,
+      "Wet Weather": 0.05
+    }
+  },
+  {
+    "id": "apex_ring",
+    "name": "Apex Ring",
+    "track_type": "technical",
+    "weather": "dry",
+    "overtaking_difficulty": "high",
+    "description": "Tight, winding street circuit demanding surgical precision, aggressive braking, and immaculate qualifying pace.",
+    "stat_weights": {
+      "Racecraft": 0.30,
+      "Consistency": 0.20,
+      "Qualifying": 0.20,
+      "Overtaking": 0.15,
+      "Speed": 0.10,
+      "Wet Weather": 0.05
+    }
+  },
+  {
+    "id": "storm_harbor",
+    "name": "Storm Harbor",
+    "track_type": "balanced",
+    "weather": "wet",
+    "overtaking_difficulty": "medium",
+    "description": "Coastal circuit battered by torrential rain and standing water, where tire temperature control and wet-weather instinct reign supreme.",
+    "stat_weights": {
+      "Wet Weather": 0.35,
+      "Consistency": 0.20,
+      "Racecraft": 0.20,
+      "Overtaking": 0.10,
+      "Qualifying": 0.10,
+      "Speed": 0.05
+    }
+  }
+]

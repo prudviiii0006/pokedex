@@ -1,0 +1,102 @@
+[
+  {
+    "id": "FIRST_GRID",
+    "name": "First Grid Entry",
+    "description": "Complete your first Grand Prix race.",
+    "category": "racing",
+    "trigger": "COUNT_RACES",
+    "threshold": 1,
+    "permanent": true,
+    "credential_policy": "off_chain",
+    "icon": "🏁"
+  },
+  {
+    "id": "FIRST_PODIUM",
+    "name": "First Podium",
+    "description": "Finish in the Top 3 (P1, P2, or P3) in any Grand Prix.",
+    "category": "racing",
+    "trigger": "COUNT_PODIUMS",
+    "threshold": 1,
+    "permanent": true,
+    "credential_policy": "off_chain",
+    "icon": "🥈"
+  },
+  {
+    "id": "FIRST_VICTORY",
+    "name": "First Victory",
+    "description": "Win your first Grand Prix race (P1).",
+    "category": "racing",
+    "trigger": "COUNT_WINS",
+    "threshold": 1,
+    "permanent": true,
+    "credential_policy": "off_chain",
+    "icon": "🥇"
+  },
+  {
+    "id": "TEN_RACES",
+    "name": "Track Veteran",
+    "description": "Complete 10 Grand Prix races.",
+    "category": "racing",
+    "trigger": "COUNT_RACES",
+    "threshold": 10,
+    "permanent": true,
+    "credential_policy": "off_chain",
+    "icon": "🏎️"
+  },
+  {
+    "id": "WET_WEATHER_MASTER",
+    "name": "Wet Weather Master",
+    "description": "Win 3 verified races in wet weather conditions.",
+    "category": "mastery",
+    "trigger": "COUNT_WET_WINS",
+    "threshold": 3,
+    "permanent": true,
+    "credential_policy": "off_chain",
+    "icon": "🌧️"
+  },
+  {
+    "id": "TOURNAMENT_ROOKIE",
+    "name": "Tournament Rookie",
+    "description": "Complete your first on-chain smart contract tournament.",
+    "category": "competitive",
+    "trigger": "COUNT_TOURNAMENTS_ENTERED",
+    "threshold": 1,
+    "permanent": true,
+    "credential_policy": "off_chain",
+    "icon": "🎯"
+  },
+  {
+    "id": "TOURNAMENT_CHAMPION",
+    "name": "Tournament Champion",
+    "description": "Win a verified Algorand smart-contract tournament with committed VRF randomness.",
+    "category": "competitive",
+    "trigger": "COUNT_TOURNAMENTS_WON",
+    "threshold": 1,
+    "permanent": true,
+    "credential_policy": "on_chain_badge",
+    "icon": "🏆"
+  },
+  {
+    "id": "GARAGE_BUILDER",
+    "name": "Garage Builder",
+    "description": "Own 3 or more AlgoRacers Driver Collectibles.",
+    "category": "collection",
+    "trigger": "OWNERSHIP_COUNT",
+    "threshold": 3,
+    "permanent": false,
+    "credential_policy": "off_chain",
+    "icon": "🚗"
+  },
+  {
+    "id": "LEGEND_COLLECTOR",
+    "name": "Legend Collector",
+    "description": "Own a Legendary rarity driver in your garage.",
+    "category": "collection",
+    "trigger": "OWN_RARITY",
+    "threshold": 1,
+    "target_rarity": "Legendary",
+    "permanent": false,
+    "credential_policy": "off_chain",
+    "icon": "👑"
+  }
+]

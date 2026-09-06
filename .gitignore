@@ -1,0 +1,60 @@
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Environment Variables & Secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.pytest_cache/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+dist/
+dist-ssr/
+*.local
+
+# Algorand & AlgoKit
+.algokit/
+sandbox/
+*.teal.tok
+artifacts/
+
+# IDE & Editors
+.vscode/
+.idea/
+*.swp
+*.swo

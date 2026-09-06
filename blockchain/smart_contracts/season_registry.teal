@@ -1,0 +1,174 @@
+#pragma version 8
+// ===========================================================================
+// AlgoRacers — Session 19: Season Championship Registry Smart Contract
+// Program: season_registry.teal (Approval Program)
+// ===========================================================================
+// Global State Schema:
+//   - "admin"            : bytes (Creator address)
+//   - "season_id"        : bytes (e.g., "season_2026_01")
+//   - "status"           : bytes ("ACTIVE" -> "FINALIZED")
+//   - "leaderboard_root" : bytes (32-byte Merkle root)
+//   - "manifest_cid"     : bytes (IPFS Manifest CID)
+//   - "player_count"     : uint64 (Total participants)
+//   - "champion_wallet"  : bytes (Season Champion address)
+//   - "is_claimed"       : uint64 (0 = Unclaimed, 1 = Claimed)
+// ===========================================================================
+
+txn ApplicationID
+int 0
+==
+bnz handle_create
+
+txn OnCompletion
+int NoOp
+==
+bnz handle_noop
+
+txn OnCompletion
+int UpdateApplication
+==
+txn OnCompletion
+int DeleteApplication
+==
+||
+bnz handle_admin_only
+
+err
+
+// ---------------------------------------------------------------------------
+// 1. CONTRACT CREATION
+// Args:
+//   app_args[0] = season_id (bytes)
+// ---------------------------------------------------------------------------
+handle_create:
+txn NumAppArgs
+int 1
+>=
+assert
+
+byte "admin"
+txn Sender
+app_global_put
+
+byte "season_id"
+txna ApplicationArgs 0
+app_global_put
+
+byte "status"
+byte "ACTIVE"
+app_global_put
+
+byte "is_claimed"
+int 0
+app_global_put
+
+int 1
+return
+
+// ---------------------------------------------------------------------------
+// 2. NO-OP METHOD DISPATCH
+// ---------------------------------------------------------------------------
+handle_noop:
+txna ApplicationArgs 0
+byte "finalize_season"
+==
+bnz handle_finalize_season
+
+txna ApplicationArgs 0
+byte "claim_reward"
+==
+bnz handle_claim_reward
+
+err
+
+// ---------------------------------------------------------------------------
+// METHOD: finalize_season(leaderboard_root, manifest_cid, player_count, champion_wallet)
+// ---------------------------------------------------------------------------
+handle_finalize_season:
+// Verify Sender is Admin
+txn Sender
+byte "admin"
+app_global_get
+==
+assert
+
+// Verify Season is not already finalized (Immutable Root Rule)
+byte "status"
+app_global_get
+byte "FINALIZED"
+!=
+assert
+
+txn NumAppArgs
+int 5
+==
+assert
+
+// Update Status to FINALIZED
+byte "status"
+byte "FINALIZED"
+app_global_put
+
+// Store Leaderboard Merkle Root
+byte "leaderboard_root"
+txna ApplicationArgs 1
+app_global_put
+
+// Store Manifest CID
+byte "manifest_cid"
+txna ApplicationArgs 2
+app_global_put
+
+// Store Player Count
+byte "player_count"
+txna ApplicationArgs 3
+btoi
+app_global_put
+
+// Store Champion Wallet
+byte "champion_wallet"
+txna ApplicationArgs 4
+app_global_put
+
+int 1
+return
+
+// ---------------------------------------------------------------------------
+// METHOD: claim_reward()
+// ---------------------------------------------------------------------------
+handle_claim_reward:
+// Verify season is finalized
+byte "status"
+app_global_get
+byte "FINALIZED"
+==
+assert
+
+// Verify Sender matches Champion Wallet
+txn Sender
+byte "champion_wallet"
+app_global_get
+==
+assert
+
+// Verify not already claimed (Double-claim prevention)
+byte "is_claimed"
+app_global_get
+int 0
+==
+assert
+
+// Mark as Claimed
+byte "is_claimed"
+int 1
+app_global_put
+
+int 1
+return
+
+handle_admin_only:
+txn Sender
+byte "admin"
+app_global_get
+==
+return

@@ -1,0 +1,44 @@
+{
+  "name": "AlgoRacer #005",
+  "description": "Crimson Vector \u2014 A calculating tactician with outstanding tire management.",
+  "image": "ipfs://bafybeic527p2j4f2e5z7e7t6c5b2r4n3k6l5o4p3q2r1s0t/driver_005.png",
+  "image_mimetype": "image/png",
+  "external_url": "https://algoracers.io/garage/005",
+  "properties": {
+    "driver_id": "005",
+    "driver_name": "Crimson Vector",
+    "team": "Apex Pulse Racing",
+    "generation": "Genesis (Gen 0)",
+    "season": "2026"
+  },
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Rare"
+    },
+    {
+      "trait_type": "Speed",
+      "value": 82
+    },
+    {
+      "trait_type": "Qualifying",
+      "value": 80
+    },
+    {
+      "trait_type": "Racecraft",
+      "value": 84
+    },
+    {
+      "trait_type": "Overtaking",
+      "value": 81
+    },
+    {
+      "trait_type": "Wet Weather",
+      "value": 78
+    },
+    {
+      "trait_type": "Consistency",
+      "value": 85
+    }
+  ]
+}

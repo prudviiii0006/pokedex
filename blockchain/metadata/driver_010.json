@@ -1,0 +1,44 @@
+{
+  "name": "AlgoRacer #010",
+  "description": "Nitro Zenith \u2014 An apex racer boasting flawless throttle modulation and raw speed.",
+  "image": "ipfs://bafybeic527p2j4f2e5z7e7t6c5b2r4n3k6l5o4p3q2r1s0t/driver_010.png",
+  "image_mimetype": "image/png",
+  "external_url": "https://algoracers.io/garage/010",
+  "properties": {
+    "driver_id": "010",
+    "driver_name": "Nitro Zenith",
+    "team": "Synthwave GP",
+    "generation": "Genesis (Gen 0)",
+    "season": "2026"
+  },
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Legendary"
+    },
+    {
+      "trait_type": "Speed",
+      "value": 99
+    },
+    {
+      "trait_type": "Qualifying",
+      "value": 97
+    },
+    {
+      "trait_type": "Racecraft",
+      "value": 95
+    },
+    {
+      "trait_type": "Overtaking",
+      "value": 98
+    },
+    {
+      "trait_type": "Wet Weather",
+      "value": 94
+    },
+    {
+      "trait_type": "Consistency",
+      "value": 96
+    }
+  ]
+}
