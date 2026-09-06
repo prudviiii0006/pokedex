@@ -1,0 +1,70 @@
+#pragma version 11
+#pragma typetrack false
+
+// algopy.arc4.ARC4Contract.approval_program() -> uint64:
+main:
+    // smart_contracts/algoracers_registry/contract.py:5
+    // class AlgoRacersRegistry(ARC4Contract):
+    txn NumAppArgs
+    bz main___algopy_default_create@9
+    txn OnCompletion
+    !
+    assert
+    txn ApplicationID
+    assert
+    pushbytess 0x02bece11 0x2fba5a1b // method "hello(string)string", method "get_version()string"
+    txna ApplicationArgs 0
+    match hello main_get_version_route@5
+    err
+
+main_get_version_route@5:
+    // smart_contracts/algoracers_registry/contract.py:10
+    // @abimethod()
+    pushbytes 0x151f7c750019416c676f5261636572732076322e302e302d616c676f6b6974
+    log
+    pushint 1
+    return
+
+main___algopy_default_create@9:
+    txn OnCompletion
+    !
+    txn ApplicationID
+    !
+    &&
+    return
+
+
+// smart_contracts.algoracers_registry.contract.AlgoRacersRegistry.hello[routing]() -> void:
+hello:
+    // smart_contracts/algoracers_registry/contract.py:6
+    // @abimethod()
+    txna ApplicationArgs 1
+    dup
+    pushint 0
+    extract_uint16 // on error: invalid array length header
+    pushint 2
+    +
+    dig 1
+    len
+    ==
+    assert // invalid number of bytes for arc4.dynamic_array<arc4.uint8>
+    extract 2 0
+    // smart_contracts/algoracers_registry/contract.py:8
+    // return "Hello, " + name
+    pushbytes "Hello, "
+    swap
+    concat
+    // smart_contracts/algoracers_registry/contract.py:6
+    // @abimethod()
+    dup
+    len
+    itob
+    extract 6 2
+    swap
+    concat
+    pushbytes 0x151f7c75
+    swap
+    concat
+    log
+    pushint 1
+    return

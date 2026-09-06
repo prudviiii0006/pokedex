@@ -1,0 +1,62 @@
+{
+  "name": "Lance Stroll \u2014 AlgoRacers 2026 (#012)",
+  "description": "Lance Stroll (Aston Martin) \u2014 Specialist in chaotic weather and opening-lap surges across tricky track conditions.",
+  "image": "ipfs://bafybeic527p2j4f2e5z7e7t6c5b2r4n3k6l5o4p3q2r1s0t/driver_012.png",
+  "image_mimetype": "image/png",
+  "external_url": "https://algoracers.io/garage/lance_stroll",
+  "properties": {
+    "driver_id": "lance_stroll",
+    "numeric_id": "012",
+    "driver_name": "Lance Stroll",
+    "code": "STR",
+    "number": 18,
+    "constructor_id": "aston_martin",
+    "constructor_name": "Aston Martin",
+    "team": "Aston Martin",
+    "nationality": "Canada",
+    "generation": "2026 Grid Series 1",
+    "season": "2026"
+  },
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Common"
+    },
+    {
+      "trait_type": "Constructor",
+      "value": "Aston Martin"
+    },
+    {
+      "trait_type": "Number",
+      "value": 18
+    },
+    {
+      "trait_type": "Nationality",
+      "value": "Canada"
+    },
+    {
+      "trait_type": "Speed",
+      "value": 75
+    },
+    {
+      "trait_type": "Qualifying",
+      "value": 72
+    },
+    {
+      "trait_type": "Racecraft",
+      "value": 73
+    },
+    {
+      "trait_type": "Overtaking",
+      "value": 76
+    },
+    {
+      "trait_type": "Wet Weather",
+      "value": 78
+    },
+    {
+      "trait_type": "Consistency",
+      "value": 72
+    }
+  ]
+}

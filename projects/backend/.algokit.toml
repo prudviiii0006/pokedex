@@ -1,0 +1,14 @@
+[algokit]
+min_version = "v2.0.0"
+
+[project]
+type = 'backend'
+name = 'backend'
+
+[project.run]
+dev = { commands = [
+  'python3 -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload',
+], description = 'Start FastAPI development server' }
+test = { commands = [
+  'python3 -m pytest tests',
+], description = 'Run backend pytest test suite' }

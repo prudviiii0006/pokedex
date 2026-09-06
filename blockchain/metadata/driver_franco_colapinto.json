@@ -1,0 +1,62 @@
+{
+  "name": "Franco Colapinto \u2014 AlgoRacers 2026 (#018)",
+  "description": "Franco Colapinto (Alpine) \u2014 Aggressive, high-speed talent with decisive overtaking bravery and strong fan following.",
+  "image": "ipfs://bafybeic527p2j4f2e5z7e7t6c5b2r4n3k6l5o4p3q2r1s0t/driver_018.png",
+  "image_mimetype": "image/png",
+  "external_url": "https://algoracers.io/garage/franco_colapinto",
+  "properties": {
+    "driver_id": "franco_colapinto",
+    "numeric_id": "018",
+    "driver_name": "Franco Colapinto",
+    "code": "COL",
+    "number": 43,
+    "constructor_id": "alpine",
+    "constructor_name": "Alpine",
+    "team": "Alpine",
+    "nationality": "Argentina",
+    "generation": "2026 Grid Series 1",
+    "season": "2026"
+  },
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Common"
+    },
+    {
+      "trait_type": "Constructor",
+      "value": "Alpine"
+    },
+    {
+      "trait_type": "Number",
+      "value": 43
+    },
+    {
+      "trait_type": "Nationality",
+      "value": "Argentina"
+    },
+    {
+      "trait_type": "Speed",
+      "value": 75
+    },
+    {
+      "trait_type": "Qualifying",
+      "value": 76
+    },
+    {
+      "trait_type": "Racecraft",
+      "value": 74
+    },
+    {
+      "trait_type": "Overtaking",
+      "value": 75
+    },
+    {
+      "trait_type": "Wet Weather",
+      "value": 71
+    },
+    {
+      "trait_type": "Consistency",
+      "value": 73
+    }
+  ]
+}

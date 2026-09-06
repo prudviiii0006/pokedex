@@ -1,0 +1,62 @@
+{
+  "name": "Alexander Albon \u2014 AlgoRacers 2026 (#020)",
+  "description": "Alexander Albon (Williams) \u2014 Williams team leader delivering stellar qualifying laps and resolute defensive driving.",
+  "image": "ipfs://bafybeic527p2j4f2e5z7e7t6c5b2r4n3k6l5o4p3q2r1s0t/driver_020.png",
+  "image_mimetype": "image/png",
+  "external_url": "https://algoracers.io/garage/alexander_albon",
+  "properties": {
+    "driver_id": "alexander_albon",
+    "numeric_id": "020",
+    "driver_name": "Alexander Albon",
+    "code": "ALB",
+    "number": 23,
+    "constructor_id": "williams",
+    "constructor_name": "Williams",
+    "team": "Williams",
+    "nationality": "Thailand",
+    "generation": "2026 Grid Series 1",
+    "season": "2026"
+  },
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Rare"
+    },
+    {
+      "trait_type": "Constructor",
+      "value": "Williams"
+    },
+    {
+      "trait_type": "Number",
+      "value": 23
+    },
+    {
+      "trait_type": "Nationality",
+      "value": "Thailand"
+    },
+    {
+      "trait_type": "Speed",
+      "value": 86
+    },
+    {
+      "trait_type": "Qualifying",
+      "value": 87
+    },
+    {
+      "trait_type": "Racecraft",
+      "value": 85
+    },
+    {
+      "trait_type": "Overtaking",
+      "value": 84
+    },
+    {
+      "trait_type": "Wet Weather",
+      "value": 81
+    },
+    {
+      "trait_type": "Consistency",
+      "value": 86
+    }
+  ]
+}
