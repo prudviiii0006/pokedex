@@ -32,7 +32,7 @@ class PublicConfigResponse(BaseModel):
     minter_address: str = Field(..., examples=["3VZQZ4J4YRJBIJ6DAHGTS2QHZBLQUVKJYWRGHENSEIO5R73C5TFFL7N2PM"])
     multisig_governance_address: str = Field("7WZ2E4G6H7I8J9K0L1M2N3O4P5Q6R7S8T9U0V1W2X3Y4Z5A6B7C8D9E0F1", examples=["7WZ2..."])
     feature_flags: Dict[str, bool] = Field(default_factory=lambda: {
-        "x402_payments_enabled": True,
+        "pack_purchases_enabled": True,
         "batch_race_simulations_enabled": True,
         "governance_proposals_enabled": True,
         "chain_reconciliation_active": True
@@ -71,7 +71,7 @@ async def get_public_config():
         minter_address=settings.MINTER_ADDRESS,
         multisig_governance_address="7WZ2E4G6H7I8J9K0L1M2N3O4P5Q6R7S8T9U0V1W2X3Y4Z5A6B7C8D9E0F1",
         feature_flags={
-            "x402_payments_enabled": True,
+            "pack_purchases_enabled": True,
             "batch_race_simulations_enabled": True,
             "governance_proposals_enabled": True,
             "chain_reconciliation_active": True

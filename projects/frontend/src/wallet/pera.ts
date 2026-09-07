@@ -18,6 +18,9 @@ export const peraWallet = new PeraWalletConnect({
   shouldShowSignTxnToast: true
 });
 
+// Algorand TestNet USDC Asset ID
+export const TESTNET_USDC_ASSET_ID = 10458941;
+
 export interface AccountBalanceInfo {
   address: string;
   amountMicroAlgos: number;
@@ -25,6 +28,8 @@ export interface AccountBalanceInfo {
   minBalanceMicroAlgos: number;
   spendableMicroAlgos: number;
   assetsCount: number;
+  usdcBalance: number;
+  isUsdcOptedIn: boolean;
 }
 
 /**
@@ -68,7 +73,7 @@ export async function disconnectPeraWallet(): Promise<void> {
 }
 
 /**
- * Queries real-time account ledger state from Algod.
+ * Queries real-time account ledger state and USDC balance from Algod.
  */
 export async function getAccountInfo(address: string): Promise<AccountBalanceInfo> {
   const accountInfo: any = await algodClient.accountInformation(address).do();
@@ -77,13 +82,20 @@ export async function getAccountInfo(address: string): Promise<AccountBalanceInf
   const spendable = Math.max(0, amount - minBalance);
   const assets = accountInfo.assets || [];
 
+  const usdcAsset = assets.find((a: any) => (a["asset-id"] ?? a.assetId) === TESTNET_USDC_ASSET_ID);
+  const usdcMicroUnits = usdcAsset ? Number(usdcAsset.amount || 0) : 0;
+  const usdcBalance = usdcMicroUnits / 1_000_000;
+  const isUsdcOptedIn = Boolean(usdcAsset);
+
   return {
     address,
     amountMicroAlgos: amount,
     amountAlgos: amount / 1_000_000,
     minBalanceMicroAlgos: minBalance,
     spendableMicroAlgos: spendable,
-    assetsCount: assets.length
+    assetsCount: assets.length,
+    usdcBalance,
+    isUsdcOptedIn
   };
 }
 
@@ -152,7 +164,7 @@ export async function createUnsignedAssetTransferTxn(
   receiverAddress: string,
   assetId: number,
   amountMicroUnits: number,
-  noteText: string = "AlgoRacers: x402 Pack Payment"
+  noteText: string = "AlgoRacers: Pack Payment"
 ): Promise<algosdk.Transaction> {
   const suggestedParams = await algodClient.getTransactionParams().do();
   const enc = new TextEncoder();
@@ -174,7 +186,7 @@ export function isPeraConnected(): boolean {
 
 /**
  * Prompts Pera Wallet to sign a transaction and returns the signed bytes as Base64.
- * Does NOT submit the transaction directly, allowing x402 / Facilitator settlement.
+ * Does NOT submit the transaction directly to Algod.
  */
 export async function signTransactionOnly(
   unsignedTxn: algosdk.Transaction,

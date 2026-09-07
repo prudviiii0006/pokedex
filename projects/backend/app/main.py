@@ -61,7 +61,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.VERSION,
-    description="REST backend service for AlgoRacers: x402 payments, driver collectibles, race engine, and AI agent.",
+    description="REST backend service for AlgoRacers: driver collectibles, race engine, and AI agent.",
     docs_url="/docs",
     redoc_url="/redoc",
     openapi_url="/openapi.json",
@@ -75,7 +75,19 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers=["*", "PAYMENT-REQUIRED", "PAYMENT-RESPONSE", "WWW-Authenticate", "X-402-Protocol", "X-402-Network", "X-402-Asset-ID", "X-Request-ID"],
+    expose_headers=[
+        "*",
+        "X-Request-ID",
+        "X-Process-Time-Ms",
+        "payment-required",
+        "Payment-Required",
+        "PAYMENT-REQUIRED",
+        "payment-response",
+        "Payment-Response",
+        "PAYMENT-RESPONSE",
+        "WWW-Authenticate",
+        "www-authenticate",
+    ],
 )
 
 # 2. Request ID, Security Headers & Body Limit Middleware
@@ -131,7 +143,7 @@ app.include_router(health.router, tags=["Health & Readiness"])
 app.include_router(version.router, tags=["Version & Build Provenance"])
 app.include_router(auth.router, prefix="/auth", tags=["Wallet Authentication"])
 app.include_router(packs.router, prefix="/packs", tags=["Packs & Rewards"])
-app.include_router(premium.router, tags=["x402 Paid Resources"])
+app.include_router(premium.router, tags=["Circuit Telemetry"])
 app.include_router(purchases.router, tags=["Purchases & NFT Delivery"])
 app.include_router(circuits.router, tags=["Circuits"])
 app.include_router(races.router, tags=["Racing & Leaderboard"])
@@ -141,7 +153,7 @@ app.include_router(agent.router, tags=["AI Racing Agent"])
 app.include_router(tournaments.router, prefix="/tournaments", tags=["On-Chain Tournaments"])
 app.include_router(profile.router, tags=["Player Profile & Progression"])
 app.include_router(achievements.router, prefix="/achievements", tags=["Achievements"])
-app.include_router(collections.router, prefix="/collections", tags=["Collection Commitments & Merkle Proofs"])
+app.include_router(collections.router, tags=["Collection Book, Drivers & Card Provenance"])
 app.include_router(seasons.router, prefix="/seasons", tags=["Championship Seasons & Merkle Claims"])
 app.include_router(governance.router, prefix="/governance", tags=["Multisig Governance & Privileged Controls"])
 app.include_router(chain_status.router, prefix="/chain", tags=["Chain Synchronization & Health"])

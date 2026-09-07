@@ -53,7 +53,7 @@ def test_public_config_endpoint_no_secrets_leaked(client):
     assert data["network"] == "testnet"
     assert "algod_address" in data
     assert "feature_flags" in data
-    assert data["feature_flags"]["x402_payments_enabled"] is True
+    assert data["feature_flags"]["pack_purchases_enabled"] is True
 
 def test_mainnet_guard_triggers_fatal_abort(monkeypatch):
     """Test 3: Startup guard raises RuntimeError if network is set to MainNet."""

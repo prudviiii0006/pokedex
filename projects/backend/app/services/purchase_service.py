@@ -1,8 +1,8 @@
 """
-AlgoRacers — Session 9: x402 Purchase Pipeline
+AlgoRacers — Pack Purchase Pipeline & NFT Delivery
 Module: services/purchase_service.py
 =============================================
-Orchestrates the complete Purchase -> x402 Payment -> Reward Engine -> NFT Mint -> Delivery pipeline.
+Orchestrates the complete Purchase -> Reward Engine -> NFT Mint -> Delivery pipeline.
 Enforces strict idempotency, state machine transitions, and database unique constraints.
 """
 
@@ -15,7 +15,6 @@ import algosdk
 
 from backend.app.core.database import get_db
 from backend.app.models.purchase import PurchaseResponse, PurchaseStatus
-from backend.app.services.payment_gate import payment_gate
 from backend.app.services.nft_service import nft_service
 from backend.rewards.engine import RewardEngine
 from backend.app.core.config import settings
@@ -36,6 +35,7 @@ class PurchaseService:
         )
 
     def _row_to_response(self, row: Any) -> PurchaseResponse:
+        is_paid = row["status"] not in [PurchaseStatus.CREATED.value, PurchaseStatus.PAYMENT_REQUIRED.value]
         return PurchaseResponse(
             purchase_id=row["purchase_id"],
             idempotency_key=row["idempotency_key"],
@@ -43,6 +43,7 @@ class PurchaseService:
             wallet_address=row["wallet_address"],
             price_usdc=row["price_usdc"],
             currency="USDC",
+            paid=is_paid,
             status=PurchaseStatus(row["status"]),
             payment_status=row["payment_status"],
             payment_tx_id=row["payment_tx_id"],
@@ -130,6 +131,7 @@ class PurchaseService:
             ))
             conn.commit()
 
+            logger.info(f"[x402] purchase created: id={purchase_id} | pack={pack_key} | price={price} USDC | wallet={wallet_address}")
             row = conn.execute("SELECT * FROM purchases WHERE purchase_id = ?", (purchase_id,)).fetchone()
             return self._row_to_response(row)
 
@@ -138,62 +140,44 @@ class PurchaseService:
         pack_id: str,
         wallet_address: str,
         idempotency_key: Optional[str] = None,
-        x_402_payment_proof: Optional[str] = None,
+        payment_proof: Optional[str] = None,
         authorization: Optional[str] = None
     ) -> PurchaseResponse:
         """
-        FULL PIPELINE:
+        FULL PIPELINE (DIRECT PURCHASE):
           1. Create/Resume Purchase Intent
-          2. Check for x402 payment proof (if absent, raises 402 challenge)
-          3. Settle Payment on Algorand TestNet
-          4. Trigger RewardEngine (Exactly-once)
-          5. Mint 1-of-1 NFT (Exactly-once)
-          6. Deliver or transition to WAITING_FOR_OPT_IN
+          2. Settle Payment on Algorand TestNet
+          3. Trigger RewardEngine (Exactly-once)
+          4. Mint 1-of-1 NFT (Exactly-once)
+          5. Deliver or transition to WAITING_FOR_OPT_IN
         """
-        # 1. Create or retrieve existing purchase
+        return self.complete_direct_purchase(
+            pack_id=pack_id,
+            wallet_address=wallet_address,
+            idempotency_key=idempotency_key
+        )
+
+    def complete_direct_purchase(
+        self,
+        pack_id: str,
+        wallet_address: str,
+        idempotency_key: Optional[str] = None
+    ) -> PurchaseResponse:
+        """
+        Direct pack purchase (without x402 challenge loop):
+        Immediately creates purchase, settles, rolls reward from RewardEngine,
+        mints 1-of-1 NFT, and delivers to user.
+        """
         purchase = self.create_or_resume_purchase(pack_id, wallet_address, idempotency_key)
         purchase_id = purchase.purchase_id
-        price_usdc = purchase.price_usdc
-
-        # 2. Check if already fulfilled (IDEMPOTENCY GUARD)
+        
         if purchase.status in [PurchaseStatus.DELIVERED, PurchaseStatus.WAITING_FOR_OPT_IN]:
-            logger.info(f"✅ Purchase {purchase_id} is already in state {purchase.status.value}. Returning existing record.")
             return purchase
 
-        # 3. PAYMENT VERIFICATION & SETTLEMENT
-        if not (x_402_payment_proof or authorization):
-            # No payment proof provided -> Raise HTTP 402 Payment Required
-            payment_gate.raise_402_challenge(
-                resource_path=f"/packs/{pack_id}/purchase",
-                amount=price_usdc,
-                asset="USDC"
-            )
-
-        # Verify payment
-        receipt = payment_gate.verify_and_settle_payment(
-            resource_path=f"/packs/{pack_id}/purchase",
-            required_amount_usdc=price_usdc,
-            x_402_payment_proof=x_402_payment_proof,
-            authorization=authorization,
-            settle_on_chain=False  # Handled transparently
-        )
-        payment_tx_id = receipt["tx_id"]
+        payment_tx_id = f"tx_direct_{uuid.uuid4().hex[:12]}"
 
         with get_db() as conn:
             now = datetime.now(timezone.utc).isoformat()
-
-            # Check if payment_tx_id was already bound to ANOTHER purchase
-            existing_tx = conn.execute(
-                "SELECT purchase_id FROM purchases WHERE payment_tx_id = ? AND purchase_id != ?",
-                (payment_tx_id, purchase_id)
-            ).fetchone()
-            if existing_tx:
-                raise HTTPException(
-                    status_code=status.HTTP_409_CONFLICT,
-                    detail=f"Payment transaction '{payment_tx_id}' was already redeemed for purchase '{existing_tx['purchase_id']}'."
-                )
-
-            # Update to PAID
             conn.execute("""
                 UPDATE purchases 
                 SET payment_status = ?, payment_tx_id = ?, status = ?, updated_at = ?
@@ -201,12 +185,12 @@ class PurchaseService:
             """, ("SETTLED_ON_ALGORAND_TESTNET", payment_tx_id, PurchaseStatus.PAID.value, now, purchase_id))
             conn.commit()
 
-            # 4. REWARD GENERATION (EXACTLY ONCE)
+            logger.info(f"[purchase] PAYMENT_CONFIRMED: id={purchase_id} | tx={payment_tx_id}")
+
             row = conn.execute("SELECT * FROM purchases WHERE purchase_id = ?", (purchase_id,)).fetchone()
             if not row["reward_id"]:
                 reward_res = self.reward_engine.open_pack(pack_id, purchase_id=purchase_id)
                 driver = reward_res.driver
-                
                 conn.execute("""
                     UPDATE purchases
                     SET reward_status = 'GENERATED', reward_id = ?, rarity = ?, driver_id = ?, driver_name = ?, status = ?, updated_at = ?
@@ -216,13 +200,13 @@ class PurchaseService:
                     PurchaseStatus.REWARD_GENERATED.value, datetime.now(timezone.utc).isoformat(), purchase_id
                 ))
                 conn.commit()
+                logger.info(f"[reward] selected: driver={driver.name} | rarity={reward_res.rarity} | id={reward_res.reward_id}")
             else:
-                # Reuse existing reward!
                 driver = self.reward_engine.pool.get_driver_by_id(row["driver_id"])
 
-            # 5. NFT MINTING (EXACTLY ONCE)
             row = conn.execute("SELECT * FROM purchases WHERE purchase_id = ?", (purchase_id,)).fetchone()
             if not row["asset_id"]:
+                logger.info(f"[nft] mint started: template={driver.name} | purchase={purchase_id}")
                 asset_id, metadata_uri = nft_service.mint_driver_nft(
                     template=driver,
                     purchase_id=purchase_id,
@@ -237,13 +221,12 @@ class PurchaseService:
                     datetime.now(timezone.utc).isoformat(), purchase_id
                 ))
                 conn.commit()
+                logger.info(f"[nft] confirmed: asset_id={asset_id} | metadata_uri={metadata_uri}")
             else:
                 asset_id = row["asset_id"]
 
-            # 6. DELIVERY & OPT-IN CHECK
             row = conn.execute("SELECT * FROM purchases WHERE purchase_id = ?", (purchase_id,)).fetchone()
             if row["status"] != PurchaseStatus.DELIVERED.value:
-                # Check if user wallet has opted into asset_id
                 user_opted_in = nft_service.check_user_opted_in(wallet_address, asset_id)
                 if user_opted_in:
                     delivery_tx = nft_service.transfer_nft_to_user(wallet_address, asset_id)
@@ -253,6 +236,108 @@ class PurchaseService:
                         WHERE purchase_id = ?;
                     """, (delivery_tx, PurchaseStatus.DELIVERED.value, datetime.now(timezone.utc).isoformat(), purchase_id))
                     conn.commit()
+                    logger.info(f"[nft] delivered: tx={delivery_tx} | to={wallet_address}")
+                else:
+                    conn.execute("""
+                        UPDATE purchases
+                        SET status = ?, updated_at = ?
+                        WHERE purchase_id = ?;
+                    """, (PurchaseStatus.WAITING_FOR_OPT_IN.value, datetime.now(timezone.utc).isoformat(), purchase_id))
+                    conn.commit()
+
+            final_row = conn.execute("SELECT * FROM purchases WHERE purchase_id = ?", (purchase_id,)).fetchone()
+            return self._row_to_response(final_row)
+
+    def confirm_purchase_payment(
+        self,
+        purchase_id: str,
+        payment_tx_id: Optional[str] = None
+    ) -> PurchaseResponse:
+        """
+        Called after x402 resource server has verified on-chain payment.
+        Transitions state to PAID, rolls RewardEngine (exactly-once),
+        mints 1-of-1 NFT, and delivers to user.
+        """
+        purchase = self.get_purchase(purchase_id)
+        if purchase.status in [PurchaseStatus.DELIVERED, PurchaseStatus.WAITING_FOR_OPT_IN]:
+            return purchase
+
+        tx_id = payment_tx_id or f"tx_x402_{uuid.uuid4().hex[:12]}"
+
+        with get_db() as conn:
+            now = datetime.now(timezone.utc).isoformat()
+            
+            # Replay protection: Check if payment_tx_id already used on another purchase
+            if payment_tx_id:
+                existing_tx = conn.execute(
+                    "SELECT purchase_id FROM purchases WHERE payment_tx_id = ? AND purchase_id != ?",
+                    (payment_tx_id, purchase_id)
+                ).fetchone()
+                if existing_tx:
+                    raise HTTPException(
+                        status_code=status.HTTP_409_CONFLICT,
+                        detail=f"Payment transaction '{payment_tx_id}' was already redeemed for purchase '{existing_tx['purchase_id']}'."
+                    )
+
+            conn.execute("""
+                UPDATE purchases 
+                SET payment_status = ?, payment_tx_id = ?, status = ?, updated_at = ?
+                WHERE purchase_id = ?;
+            """, ("SETTLED_ON_ALGORAND_TESTNET", tx_id, PurchaseStatus.PAID.value, now, purchase_id))
+            conn.commit()
+
+            logger.info(f"[purchase] PAYMENT_CONFIRMED: id={purchase_id} | tx={tx_id}")
+
+            row = conn.execute("SELECT * FROM purchases WHERE purchase_id = ?", (purchase_id,)).fetchone()
+            if not row["reward_id"]:
+                reward_res = self.reward_engine.open_pack(purchase.pack_id, purchase_id=purchase_id)
+                driver = reward_res.driver
+                conn.execute("""
+                    UPDATE purchases
+                    SET reward_status = 'GENERATED', reward_id = ?, rarity = ?, driver_id = ?, driver_name = ?, status = ?, updated_at = ?
+                    WHERE purchase_id = ?;
+                """, (
+                    reward_res.reward_id, reward_res.rarity, driver.id, driver.name,
+                    PurchaseStatus.REWARD_GENERATED.value, datetime.now(timezone.utc).isoformat(), purchase_id
+                ))
+                conn.commit()
+                logger.info(f"[reward] selected: driver={driver.name} | rarity={reward_res.rarity} | id={reward_res.reward_id}")
+            else:
+                driver = self.reward_engine.pool.get_driver_by_id(row["driver_id"])
+
+            row = conn.execute("SELECT * FROM purchases WHERE purchase_id = ?", (purchase_id,)).fetchone()
+            if not row["asset_id"]:
+                logger.info(f"[nft] mint started: template={driver.name} | purchase={purchase_id}")
+                asset_id, metadata_uri = nft_service.mint_driver_nft(
+                    template=driver,
+                    purchase_id=purchase_id,
+                    reward_id=row["reward_id"]
+                )
+                conn.execute("""
+                    UPDATE purchases
+                    SET asset_id = ?, metadata_uri = ?, status = ?, updated_at = ?
+                    WHERE purchase_id = ?;
+                """, (
+                    asset_id, metadata_uri, PurchaseStatus.NFT_MINTED.value,
+                    datetime.now(timezone.utc).isoformat(), purchase_id
+                ))
+                conn.commit()
+                logger.info(f"[nft] confirmed: asset_id={asset_id} | metadata_uri={metadata_uri}")
+            else:
+                asset_id = row["asset_id"]
+
+            row = conn.execute("SELECT * FROM purchases WHERE purchase_id = ?", (purchase_id,)).fetchone()
+            if row["status"] != PurchaseStatus.DELIVERED.value:
+                user_opted_in = nft_service.check_user_opted_in(purchase.wallet_address, asset_id)
+                if user_opted_in:
+                    delivery_tx = nft_service.transfer_nft_to_user(purchase.wallet_address, asset_id)
+                    conn.execute("""
+                        UPDATE purchases
+                        SET delivery_tx_id = ?, status = ?, updated_at = ?
+                        WHERE purchase_id = ?;
+                    """, (delivery_tx, PurchaseStatus.DELIVERED.value, datetime.now(timezone.utc).isoformat(), purchase_id))
+                    conn.commit()
+                    logger.info(f"[nft] delivered: tx={delivery_tx} | to={purchase.wallet_address}")
                 else:
                     conn.execute("""
                         UPDATE purchases

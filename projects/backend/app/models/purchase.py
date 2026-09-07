@@ -38,6 +38,7 @@ class PurchaseResponse(BaseModel):
     wallet_address: str = Field(..., examples=["3VZQZ4J4YRJBIJ6DAHGTS2QHZBLQUVKJYWRGHENSEIO5R73C5TFFL7N2PM"])
     price_usdc: float = Field(..., examples=[0.01])
     currency: str = Field("USDC")
+    paid: bool = Field(False, examples=[True], description="Whether purchase payment has been verified and settled")
     
     # State tracking
     status: PurchaseStatus = Field(..., examples=[PurchaseStatus.DELIVERED])

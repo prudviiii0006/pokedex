@@ -199,27 +199,106 @@ npm run build
 
 ---
 
-## x402 Status
+## x402 Algorand TestNet Payment Protocol
 
-The x402 payment module is maintained as an isolated service in `projects/x402/`:
-- **Current State**: Structural foundation created with official `@x402/avm` and `@x402/core` packages.
-- **Role**: Handles Algorand TestNet USDC payment requirements via HTTP 402 Payment Required status.
-- **Migration Note**: Kept isolated as a standalone workspace component. Integration can be resumed after workspace verification.
+AlgoRacers integrates native **x402 V2 Algorand TestNet USDC micropayments** to protect premium tactical data and Grand Prix circuit intelligence without requiring web3 logins or subscription models.
 
----
+### Architecture Flow
 
-## TestNet Parameters & Configuration
+```text
+Frontend / Wallet
+       ↓
+Protected AlgoRacers API
+       ↓
+HTTP 402
+       ↓
+x402 payment
+       ↓
+Algorand TestNet USDC
+       ↓
+x402 facilitator
+       ↓
+Payment receiver
+       ↓
+AlgoRacers API
+```
+
+### Protected Endpoint & Parameters
 
 | Parameter | Value |
 | :--- | :--- |
-| **Algorand Network** | TestNet (`https://testnet-api.algonode.cloud`) |
-| **Payment Receiver (Treasury)** | `3VZQZ4J4YRJBIJ6DAHGTS2QHZBLQUVKJYWRGHENSEIO5R73C5TFFL7N2PM` |
-| **Minter / Operator Account** | `3VZQZ4J4YRJBIJ6DAHGTS2QHZBLQUVKJYWRGHENSEIO5R73C5TFFL7N2PM` |
-| **TestNet USDC ASA ID** | `10458941` (6 Decimals, 1 USDC = 1,000,000 $\mu$USDC) |
-| **x402 Facilitator URL** | `https://facilitator.goplausible.xyz` |
+| **Protected Endpoint** | `GET /api/v1/premium-analysis` (alias: `GET /premium-analysis`) |
+| **Resource Title** | Apex Grand Prix — Sector Telemetry & Pit Delta Intelligence |
+| **Payment Asset** | TestNet USDC (`ASA ID: 10458941`) |
+| **Price** | `$0.01 TestNet USDC` (`10,000` micro-units) |
+| **Payment Scheme** | `exact` |
+| **Network (CAIP-2)** | `algorand:SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=` |
+| **Payment Receiver (`payTo`)** | `GZSTVC3KHF3QQ77CCQFHXL3CYFCM4ANFRJOIC3TUHQKI2STM25BC7IAZU4` |
+| **Facilitator URL** | `https://facilitator.goplausible.xyz` |
 
-To configure projects for Algorand TestNet:
-1. Update `projects/backend/.env` with `ALGOD_ADDRESS=https://testnet-api.algonode.cloud`, `TREASURY_ADDRESS=3VZQZ4J4YRJBIJ6DAHGTS2QHZBLQUVKJYWRGHENSEIO5R73C5TFFL7N2PM`, and `X402_PAY_TO=3VZQZ4J4YRJBIJ6DAHGTS2QHZBLQUVKJYWRGHENSEIO5R73C5TFFL7N2PM`.
-2. Update `projects/x402/.env` with `PAYMENT_RECEIVER_ADDRESS=3VZQZ4J4YRJBIJ6DAHGTS2QHZBLQUVKJYWRGHENSEIO5R73C5TFFL7N2PM`.
-3. Update `projects/frontend/.env` with `VITE_NETWORK=testnet` and `VITE_PAYMENT_RECEIVER_ADDRESS=3VZQZ4J4YRJBIJ6DAHGTS2QHZBLQUVKJYWRGHENSEIO5R73C5TFFL7N2PM`.
+### Environment Variables
+
+Ensure your backend `.env` contains the following:
+
+```env
+ALGORAND_NETWORK=testnet
+ALGOD_ADDRESS=https://testnet-api.algonode.cloud
+ALGOD_TOKEN=
+INDEXER_ADDRESS=https://testnet-idx.algonode.cloud
+INDEXER_TOKEN=
+
+PAYMENT_RECEIVER_ADDRESS=GZSTVC3KHF3QQ77CCQFHXL3CYFCM4ANFRJOIC3TUHQKI2STM25BC7IAZU4
+TREASURY_ADDRESS=GZSTVC3KHF3QQ77CCQFHXL3CYFCM4ANFRJOIC3TUHQKI2STM25BC7IAZU4
+MINTER_ADDRESS=3VZQZ4J4YRJBIJ6DAHGTS2QHZBLQUVKJYWRGHENSEIO5R73C5TFFL7N2PM
+
+X402_FACILITATOR_URL=https://facilitator.goplausible.xyz
+X402_PAY_TO=GZSTVC3KHF3QQ77CCQFHXL3CYFCM4ANFRJOIC3TUHQKI2STM25BC7IAZU4
+X402_PAYMENT_ASSET=10458941
+FASTAPI_BASE_URL=http://localhost:8000
+```
+
+### How to Start the Project
+
+1. **Start FastAPI Backend**:
+```bash
+cd projects/backend
+PYTHONPATH=. python3 -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000
+```
+
+2. **Start React Frontend**:
+```bash
+cd projects/frontend
+npm install
+npm run dev -- --host 127.0.0.1 --port 5173
+```
+
+### How to Test the x402 Flow
+
+1. **Run Automated Test Suite (188+ tests)**:
+```bash
+pytest projects/backend/tests/test_x402_payments.py -v
+```
+
+2. **Run End-to-End Verification Script**:
+```bash
+python3 projects/backend/scripts/test_x402_payment.py
+```
+
+### Protocol Execution Details
+
+1. **Client requests protected resource**:
+   - `GET /api/v1/premium-analysis`
+2. **Server responds with HTTP 402**:
+   - Status: `402 Payment Required`
+   - Headers: `payment-required: <base64-challenge>`, `WWW-Authenticate: x402`
+3. **Client creates payment proof**:
+   - Signs TestNet USDC transaction (Asset ID `10458941`, amount `10000`, receiver `GZSTVC3KHF3QQ77CCQFHXL3CYFCM4ANFRJOIC3TUHQKI2STM25BC7IAZU4`).
+4. **Client retries with payment signature**:
+   - `GET /api/v1/premium-analysis` with header `payment-signature: <base64-payload>`
+5. **Server verifies, settles & enforces replay protection**:
+   - Verifies via GoPlausible Facilitator & Algorand TestNet ledger.
+   - Enforces single-use transaction ID via SQLite settlement ledger (`x402_settlements`).
+6. **Server returns HTTP 200 OK**:
+   - Headers: `payment-response: <base64-receipt>`
+   - Body: Unlocked telemetry & tactical AI insight response.
 

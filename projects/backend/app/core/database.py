@@ -91,6 +91,20 @@ def init_db():
         """)
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_rec_wallet ON recommendations(wallet_address);")
 
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS x402_settlements (
+                payment_tx_id TEXT PRIMARY KEY,
+                payer_address TEXT NOT NULL,
+                pay_to_address TEXT NOT NULL,
+                amount_micro_usdc INTEGER NOT NULL,
+                asset_id INTEGER NOT NULL,
+                resource_url TEXT NOT NULL,
+                status TEXT NOT NULL,
+                settled_at TEXT NOT NULL
+            );
+        """)
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_x402_payer ON x402_settlements(payer_address);")
+
         # Session 13: Authentication Challenges & Sessions Tables
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS auth_challenges (
