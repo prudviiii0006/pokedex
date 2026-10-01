@@ -1,0 +1,59 @@
+{
+  "name": "Solarynx \u2014 AlgoCreatures Genesis (#023)",
+  "description": "Solarynx (Aether) \u2014 Solar winged chimera unleashing brilliant radiant bursts that dispel all dark forces.",
+  "image": "ipfs://bafybeicreaturesgenesis2026series1/creature_023.png",
+  "image_mimetype": "image/png",
+  "external_url": "https://algocreatures.io/species/solarynx",
+  "properties": {
+    "species_id": "solarynx",
+    "index_number": 23,
+    "species_name": "Solarynx",
+    "primary_type": "Light",
+    "secondary_type": null,
+    "faction": "Aether",
+    "rarity": "Epic",
+    "evolution_family": "luminling_line",
+    "evolution_stage": 2,
+    "next_evolution_id": "aetheris",
+    "generation": "Genesis Series 1",
+    "standard": "ARC-3"
+  },
+  "attributes": [
+    {
+      "trait_type": "Primary Type",
+      "value": "Light"
+    },
+    {
+      "trait_type": "Faction",
+      "value": "Aether"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Epic"
+    },
+    {
+      "trait_type": "Evolution Stage",
+      "value": "Stage 2"
+    },
+    {
+      "trait_type": "HP",
+      "value": 88
+    },
+    {
+      "trait_type": "Attack",
+      "value": 93
+    },
+    {
+      "trait_type": "Defense",
+      "value": 86
+    },
+    {
+      "trait_type": "Speed",
+      "value": 92
+    },
+    {
+      "trait_type": "Stamina",
+      "value": 90
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "name": "Leviathos \u2014 AlgoCreatures Genesis (#006)",
+  "description": "Leviathos (Hydra) \u2014 Ancient abyssal emperor capable of summoning tidal floods that reshape entire battlefields.",
+  "image": "ipfs://bafybeicreaturesgenesis2026series1/creature_006.png",
+  "image_mimetype": "image/png",
+  "external_url": "https://algocreatures.io/species/leviathos",
+  "properties": {
+    "species_id": "leviathos",
+    "index_number": 6,
+    "species_name": "Leviathos",
+    "primary_type": "Water",
+    "secondary_type": null,
+    "faction": "Hydra",
+    "rarity": "Legendary",
+    "evolution_family": "aquafox_line",
+    "evolution_stage": 3,
+    "next_evolution_id": null,
+    "generation": "Genesis Series 1",
+    "standard": "ARC-3"
+  },
+  "attributes": [
+    {
+      "trait_type": "Primary Type",
+      "value": "Water"
+    },
+    {
+      "trait_type": "Faction",
+      "value": "Hydra"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Legendary"
+    },
+    {
+      "trait_type": "Evolution Stage",
+      "value": "Stage 3"
+    },
+    {
+      "trait_type": "HP",
+      "value": 99
+    },
+    {
+      "trait_type": "Attack",
+      "value": 94
+    },
+    {
+      "trait_type": "Defense",
+      "value": 97
+    },
+    {
+      "trait_type": "Speed",
+      "value": 90
+    },
+    {
+      "trait_type": "Stamina",
+      "value": 98
+    }
+  ]
+}

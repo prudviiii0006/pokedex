@@ -1,12 +1,33 @@
 {
-  "name": "algoracers",
+  "name": "pokedex",
   "version": "1.0.0",
   "private": true,
-  "description": "AlgoRacers — Collect, Trade, Fuse & Race Formula 1 Collectibles on Algorand",
+  "description": "Pokédex — 1-of-1 Digital Pokémon Collectibles on Algorand",
+  "scripts": {
+    "frontend:dev": "npm --prefix projects/frontend run dev",
+    "frontend:build": "npm --prefix projects/frontend run build",
+    "backend:dev": "npm --prefix projects/backend run dev",
+    "backend:start": "npm --prefix projects/backend run start",
+    "test:backend": "pytest projects/backend/tests/ -v",
+    "test:metadata": "pytest projects/backend/tests/test_ipfs_metadata.py -v",
+    "x402:install": "pnpm install -r",
+    "x402:tutorial:server": "pnpm --filter x402-server start",
+    "x402:tutorial:client": "pnpm --filter x402-client start"
+  },
   "dependencies": {
+    "@hono/node-server": "^2.1.1",
+    "@x402-avm/extensions": "^2.6.1",
     "@x402/avm": "^2.25.0",
     "@x402/core": "^2.25.0",
     "@x402/fetch": "^2.25.0",
-    "@x402/hono": "^2.25.0"
+    "@x402/hono": "^2.25.0",
+    "algosdk": "^3.7.0",
+    "dotenv": "^17.4.2",
+    "hono": "^4.13.7"
+  },
+  "devDependencies": {
+    "@types/node": "^26.5.0",
+    "tsx": "^4.23.13",
+    "typescript": "^7.0.2"
   }
 }

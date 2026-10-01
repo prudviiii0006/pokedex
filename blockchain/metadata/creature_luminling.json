@@ -1,0 +1,59 @@
+{
+  "name": "Luminling \u2014 AlgoCreatures Genesis (#022)",
+  "description": "Luminling (Aether) \u2014 Radiant star wisp emitting pure crystalline illumination that bolsters combat readiness.",
+  "image": "ipfs://bafybeicreaturesgenesis2026series1/creature_022.png",
+  "image_mimetype": "image/png",
+  "external_url": "https://algocreatures.io/species/luminling",
+  "properties": {
+    "species_id": "luminling",
+    "index_number": 22,
+    "species_name": "Luminling",
+    "primary_type": "Light",
+    "secondary_type": null,
+    "faction": "Aether",
+    "rarity": "Common",
+    "evolution_family": "luminling_line",
+    "evolution_stage": 1,
+    "next_evolution_id": "solarynx",
+    "generation": "Genesis Series 1",
+    "standard": "ARC-3"
+  },
+  "attributes": [
+    {
+      "trait_type": "Primary Type",
+      "value": "Light"
+    },
+    {
+      "trait_type": "Faction",
+      "value": "Aether"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Common"
+    },
+    {
+      "trait_type": "Evolution Stage",
+      "value": "Stage 1"
+    },
+    {
+      "trait_type": "HP",
+      "value": 75
+    },
+    {
+      "trait_type": "Attack",
+      "value": 76
+    },
+    {
+      "trait_type": "Defense",
+      "value": 75
+    },
+    {
+      "trait_type": "Speed",
+      "value": 84
+    },
+    {
+      "trait_type": "Stamina",
+      "value": 80
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "name": "Terrashell \u2014 AlgoCreatures Genesis (#014)",
+  "description": "Terrashell (Geo) \u2014 Heavy siege tortoise generating seismic earthquakes with every thunderous step.",
+  "image": "ipfs://bafybeicreaturesgenesis2026series1/creature_014.png",
+  "image_mimetype": "image/png",
+  "external_url": "https://algocreatures.io/species/terrashell",
+  "properties": {
+    "species_id": "terrashell",
+    "index_number": 14,
+    "species_name": "Terrashell",
+    "primary_type": "Earth",
+    "secondary_type": null,
+    "faction": "Geo",
+    "rarity": "Rare",
+    "evolution_family": "gravelit_line",
+    "evolution_stage": 2,
+    "next_evolution_id": "obsidimoth",
+    "generation": "Genesis Series 1",
+    "standard": "ARC-3"
+  },
+  "attributes": [
+    {
+      "trait_type": "Primary Type",
+      "value": "Earth"
+    },
+    {
+      "trait_type": "Faction",
+      "value": "Geo"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Rare"
+    },
+    {
+      "trait_type": "Evolution Stage",
+      "value": "Stage 2"
+    },
+    {
+      "trait_type": "HP",
+      "value": 92
+    },
+    {
+      "trait_type": "Attack",
+      "value": 82
+    },
+    {
+      "trait_type": "Defense",
+      "value": 94
+    },
+    {
+      "trait_type": "Speed",
+      "value": 68
+    },
+    {
+      "trait_type": "Stamina",
+      "value": 94
+    }
+  ]
+}

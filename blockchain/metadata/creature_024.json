@@ -1,0 +1,59 @@
+{
+  "name": "Aetheris \u2014 AlgoCreatures Genesis (#024)",
+  "description": "Aetheris (Aether) \u2014 Supreme celestial deity incarnated with harmonic cosmic energy that reigns over all elements.",
+  "image": "ipfs://bafybeicreaturesgenesis2026series1/creature_024.png",
+  "image_mimetype": "image/png",
+  "external_url": "https://algocreatures.io/species/aetheris",
+  "properties": {
+    "species_id": "aetheris",
+    "index_number": 24,
+    "species_name": "Aetheris",
+    "primary_type": "Light",
+    "secondary_type": null,
+    "faction": "Aether",
+    "rarity": "Legendary",
+    "evolution_family": "luminling_line",
+    "evolution_stage": 3,
+    "next_evolution_id": null,
+    "generation": "Genesis Series 1",
+    "standard": "ARC-3"
+  },
+  "attributes": [
+    {
+      "trait_type": "Primary Type",
+      "value": "Light"
+    },
+    {
+      "trait_type": "Faction",
+      "value": "Aether"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Legendary"
+    },
+    {
+      "trait_type": "Evolution Stage",
+      "value": "Stage 3"
+    },
+    {
+      "trait_type": "HP",
+      "value": 99
+    },
+    {
+      "trait_type": "Attack",
+      "value": 98
+    },
+    {
+      "trait_type": "Defense",
+      "value": 95
+    },
+    {
+      "trait_type": "Speed",
+      "value": 99
+    },
+    {
+      "trait_type": "Stamina",
+      "value": 99
+    }
+  ]
+}

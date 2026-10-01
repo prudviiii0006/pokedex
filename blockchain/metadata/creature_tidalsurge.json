@@ -1,0 +1,59 @@
+{
+  "name": "Tidalsurge \u2014 AlgoCreatures Genesis (#005)",
+  "description": "Tidalsurge (Hydra) \u2014 Powerful ocean beast commanding high-pressure waves and impenetrable tidal barriers.",
+  "image": "ipfs://bafybeicreaturesgenesis2026series1/creature_005.png",
+  "image_mimetype": "image/png",
+  "external_url": "https://algocreatures.io/species/tidalsurge",
+  "properties": {
+    "species_id": "tidalsurge",
+    "index_number": 5,
+    "species_name": "Tidalsurge",
+    "primary_type": "Water",
+    "secondary_type": null,
+    "faction": "Hydra",
+    "rarity": "Rare",
+    "evolution_family": "aquafox_line",
+    "evolution_stage": 2,
+    "next_evolution_id": "leviathos",
+    "generation": "Genesis Series 1",
+    "standard": "ARC-3"
+  },
+  "attributes": [
+    {
+      "trait_type": "Primary Type",
+      "value": "Water"
+    },
+    {
+      "trait_type": "Faction",
+      "value": "Hydra"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Rare"
+    },
+    {
+      "trait_type": "Evolution Stage",
+      "value": "Stage 2"
+    },
+    {
+      "trait_type": "HP",
+      "value": 86
+    },
+    {
+      "trait_type": "Attack",
+      "value": 82
+    },
+    {
+      "trait_type": "Defense",
+      "value": 85
+    },
+    {
+      "trait_type": "Speed",
+      "value": 84
+    },
+    {
+      "trait_type": "Stamina",
+      "value": 88
+    }
+  ]
+}

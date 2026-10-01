@@ -1,0 +1,28 @@
+{
+  "name": "bazaar-integration",
+  "version": "1.0.0",
+  "description": "x402 resource server with Bazaar discovery integration",
+  "main": "index.ts",
+  "type": "module",
+  "scripts": {
+    "start": "tsx index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.6.4",
+  "dependencies": {
+    "@hono/node-server": "^1.19.9",
+    "@x402/avm": "^2.11.0",
+    "@x402/core": "^2.11.0",
+    "@x402/hono": "^2.11.0",
+    "@x402-avm/extensions": "^2.6.1",
+    "dotenv": "^17.3.1",
+    "hono": "^4.12.2"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}

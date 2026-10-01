@@ -1,0 +1,59 @@
+{
+  "name": "Pyreclaw \u2014 AlgoCreatures Genesis (#002)",
+  "description": "Pyreclaw (Ignis) \u2014 Fierce predator with razor-sharp heated talons that burn through reinforced defenses.",
+  "image": "ipfs://bafybeicreaturesgenesis2026series1/creature_002.png",
+  "image_mimetype": "image/png",
+  "external_url": "https://algocreatures.io/species/pyreclaw",
+  "properties": {
+    "species_id": "pyreclaw",
+    "index_number": 2,
+    "species_name": "Pyreclaw",
+    "primary_type": "Fire",
+    "secondary_type": null,
+    "faction": "Ignis",
+    "rarity": "Rare",
+    "evolution_family": "emberling_line",
+    "evolution_stage": 2,
+    "next_evolution_id": "infernovar",
+    "generation": "Genesis Series 1",
+    "standard": "ARC-3"
+  },
+  "attributes": [
+    {
+      "trait_type": "Primary Type",
+      "value": "Fire"
+    },
+    {
+      "trait_type": "Faction",
+      "value": "Ignis"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Rare"
+    },
+    {
+      "trait_type": "Evolution Stage",
+      "value": "Stage 2"
+    },
+    {
+      "trait_type": "HP",
+      "value": 84
+    },
+    {
+      "trait_type": "Attack",
+      "value": 88
+    },
+    {
+      "trait_type": "Defense",
+      "value": 76
+    },
+    {
+      "trait_type": "Speed",
+      "value": 88
+    },
+    {
+      "trait_type": "Stamina",
+      "value": 80
+    }
+  ]
+}

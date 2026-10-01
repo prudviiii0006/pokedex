@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AlgoRacers — Session 22: Database Restore & Verification CLI
+Pokédex — Database Restore & Verification CLI
 Module: backend/scripts/restore_db.py
 ============================================================
 Restores database from a snapshot and runs verification audits.
@@ -20,7 +20,7 @@ from backend.app.chain.reconciliation import blockchain_reconciler
 
 def restore_database(backup_path: str):
     print("=" * 75)
-    print("🏎️  ALGORACERS — DATABASE RESTORE & INTEGRITY AUDITOR")
+    print("⚡  POKÉDEX — DATABASE RESTORE & INTEGRITY AUDITOR")
     print("=" * 75)
 
     src = Path(backup_path)

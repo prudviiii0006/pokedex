@@ -1,0 +1,59 @@
+{
+  "name": "Voltpaw \u2014 AlgoCreatures Genesis (#011)",
+  "description": "Voltpaw (Volt) \u2014 High-voltage combatant that discharges chain lightning attacks with pinpoint precision.",
+  "image": "ipfs://bafybeicreaturesgenesis2026series1/creature_011.png",
+  "image_mimetype": "image/png",
+  "external_url": "https://algocreatures.io/species/voltpaw",
+  "properties": {
+    "species_id": "voltpaw",
+    "index_number": 11,
+    "species_name": "Voltpaw",
+    "primary_type": "Electric",
+    "secondary_type": null,
+    "faction": "Volt",
+    "rarity": "Rare",
+    "evolution_family": "sparkpup_line",
+    "evolution_stage": 2,
+    "next_evolution_id": "thundermane",
+    "generation": "Genesis Series 1",
+    "standard": "ARC-3"
+  },
+  "attributes": [
+    {
+      "trait_type": "Primary Type",
+      "value": "Electric"
+    },
+    {
+      "trait_type": "Faction",
+      "value": "Volt"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Rare"
+    },
+    {
+      "trait_type": "Evolution Stage",
+      "value": "Stage 2"
+    },
+    {
+      "trait_type": "HP",
+      "value": 78
+    },
+    {
+      "trait_type": "Attack",
+      "value": 89
+    },
+    {
+      "trait_type": "Defense",
+      "value": 72
+    },
+    {
+      "trait_type": "Speed",
+      "value": 96
+    },
+    {
+      "trait_type": "Stamina",
+      "value": 80
+    }
+  ]
+}

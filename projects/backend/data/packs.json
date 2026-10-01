@@ -1,30 +1,89 @@
 {
   "basic": {
     "id": "basic",
-    "name": "Basic Pack",
-    "price": 2,
-    "currency": "USDC",
+    "name": "Trainer Booster Pack",
+    "price": 0.1,
+    "currency": "ALGO",
     "reward_count": 1,
-    "description": "Standard entry-level driver pack with solid rookie and seasoned contenders.",
+    "description": "Standard entry-level booster pack containing 1 Pokémon collectible.",
     "rarities": {
       "Common": 65,
       "Rare": 25,
-      "Epic": 9,
-      "Legendary": 1
+      "Epic": 8,
+      "Legendary": 2
     }
   },
   "premium": {
     "id": "premium",
-    "name": "Premium Pack",
-    "price": 10,
-    "currency": "USDC",
-    "reward_count": 1,
-    "description": "High-tier apex pack boasting heavily boosted odds for Rare, Epic, and Legendary drivers.",
+    "name": "Premium Apex Pack",
+    "price": 0.5,
+    "currency": "ALGO",
+    "reward_count": 3,
+    "description": "High-tier apex pack boasting boosted odds for Rare, Epic, and Legendary Pokémon.",
     "rarities": {
-      "Common": 20,
-      "Rare": 40,
-      "Epic": 30,
-      "Legendary": 10
+      "Rare": 58,
+      "Epic": 33,
+      "Legendary": 9
+    }
+  },
+  "fire_event": {
+    "id": "fire_event",
+    "name": "Volcanic Fire Booster",
+    "price": 0.2,
+    "currency": "ALGO",
+    "reward_count": 2,
+    "type_pool": ["fire"],
+    "description": "Special event booster pack containing exclusive Fire-type Pokémon like Charmander and Charizard.",
+    "rarities": {
+      "Common": 45,
+      "Rare": 35,
+      "Epic": 15,
+      "Legendary": 5
+    }
+  },
+  "water_event": {
+    "id": "water_event",
+    "name": "Tidal Water Booster",
+    "price": 0.2,
+    "currency": "ALGO",
+    "reward_count": 2,
+    "type_pool": ["water"],
+    "description": "Special event booster pack featuring Water-type champions including Squirtle and Blastoise.",
+    "rarities": {
+      "Common": 45,
+      "Rare": 35,
+      "Epic": 15,
+      "Legendary": 5
+    }
+  },
+  "electric_event": {
+    "id": "electric_event",
+    "name": "Thunderstorm Electric Booster",
+    "price": 0.2,
+    "currency": "ALGO",
+    "reward_count": 2,
+    "type_pool": ["electric"],
+    "description": "Special event booster pack powered by Electric-type creatures like Pikachu and Jolteon.",
+    "rarities": {
+      "Common": 45,
+      "Rare": 35,
+      "Epic": 15,
+      "Legendary": 5
+    }
+  },
+  "ghost_event": {
+    "id": "ghost_event",
+    "name": "Shadow Realm Booster",
+    "price": 0.2,
+    "currency": "ALGO",
+    "reward_count": 2,
+    "type_pool": ["ghost", "psychic"],
+    "description": "Special event booster pack featuring enigmatic Ghost and Psychic type Pokémon like Gengar and Mewtwo.",
+    "rarities": {
+      "Common": 40,
+      "Rare": 35,
+      "Epic": 20,
+      "Legendary": 5
     }
   }
 }

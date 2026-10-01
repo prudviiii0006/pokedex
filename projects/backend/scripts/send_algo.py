@@ -1,5 +1,5 @@
 """
-AlgoRacers — Session 1: Algorand Fundamentals
+Pokédex — Algorand Fundamentals
 Script: send_algo.py
 =============================================
 Demonstrates the explicit 5-step transaction lifecycle:
@@ -29,7 +29,7 @@ def get_algod_client() -> algod.AlgodClient:
 
 def main():
     print("=" * 65)
-    print("🏎️  ALGORACERS — EXPLICIT ALGORAND PAYMENT TRANSACTION")
+    print("⚡  POKÉDEX — EXPLICIT ALGORAND PAYMENT TRANSACTION")
     print("=" * 65)
 
     client = get_algod_client()
@@ -85,7 +85,7 @@ def main():
     print(f"   • Genesis Hash:      {sp.gh}")
 
     amount_to_send = 100_000  # 0.1 ALGO in microALGOs
-    note_data = b"AlgoRacers: Session 1 Test Payment"
+    note_data = b"Pokédex: Algorand Test Payment"
 
     print("\n[Constructing PaymentTxn Object]")
     txn = transaction.PaymentTxn(

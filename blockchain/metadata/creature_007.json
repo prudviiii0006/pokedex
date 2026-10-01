@@ -1,0 +1,59 @@
+{
+  "name": "Sproutling \u2014 AlgoCreatures Genesis (#007)",
+  "description": "Sproutling (Sylvan) \u2014 Gentle woodland sprite that channels sunlight to rejuvenate allies and tangle foes in roots.",
+  "image": "ipfs://bafybeicreaturesgenesis2026series1/creature_007.png",
+  "image_mimetype": "image/png",
+  "external_url": "https://algocreatures.io/species/sproutling",
+  "properties": {
+    "species_id": "sproutling",
+    "index_number": 7,
+    "species_name": "Sproutling",
+    "primary_type": "Grass",
+    "secondary_type": null,
+    "faction": "Sylvan",
+    "rarity": "Common",
+    "evolution_family": "sproutling_line",
+    "evolution_stage": 1,
+    "next_evolution_id": "florasaur",
+    "generation": "Genesis Series 1",
+    "standard": "ARC-3"
+  },
+  "attributes": [
+    {
+      "trait_type": "Primary Type",
+      "value": "Grass"
+    },
+    {
+      "trait_type": "Faction",
+      "value": "Sylvan"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Common"
+    },
+    {
+      "trait_type": "Evolution Stage",
+      "value": "Stage 1"
+    },
+    {
+      "trait_type": "HP",
+      "value": 76
+    },
+    {
+      "trait_type": "Attack",
+      "value": 68
+    },
+    {
+      "trait_type": "Defense",
+      "value": 78
+    },
+    {
+      "trait_type": "Speed",
+      "value": 70
+    },
+    {
+      "trait_type": "Stamina",
+      "value": 82
+    }
+  ]
+}

@@ -1,8 +1,8 @@
 """
-AlgoRacers — Session 17: Metadata Service
+Pokédex — Metadata Service
 Module: services/metadata_service.py
 ========================================
-Manages canonical driver metadata resolution, ARC-3 URI formatting,
+Manages canonical Pokémon metadata resolution, ARC-3 URI formatting,
 and manifest validation for the NFT minting pipeline.
 """
 
@@ -13,7 +13,7 @@ from typing import Dict, Any, Optional
 
 from backend.app.services.ipfs_utils import compute_cid_v1, canonical_json_bytes
 
-logger = logging.getLogger("algoracers.metadata")
+logger = logging.getLogger("pokedex.metadata")
 
 def _resolve_blockchain_dir() -> Path:
     cand1 = Path(__file__).resolve().parent.parent.parent.parent.parent / "blockchain" / "metadata"

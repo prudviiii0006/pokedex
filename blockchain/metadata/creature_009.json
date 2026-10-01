@@ -1,0 +1,59 @@
+{
+  "name": "Verdantitan \u2014 AlgoCreatures Genesis (#009)",
+  "description": "Verdantitan (Sylvan) \u2014 Colossal guardian of the primordial forest boasting impenetrable ironbark skin.",
+  "image": "ipfs://bafybeicreaturesgenesis2026series1/creature_009.png",
+  "image_mimetype": "image/png",
+  "external_url": "https://algocreatures.io/species/verdantitan",
+  "properties": {
+    "species_id": "verdantitan",
+    "index_number": 9,
+    "species_name": "Verdantitan",
+    "primary_type": "Grass",
+    "secondary_type": null,
+    "faction": "Sylvan",
+    "rarity": "Epic",
+    "evolution_family": "sproutling_line",
+    "evolution_stage": 3,
+    "next_evolution_id": null,
+    "generation": "Genesis Series 1",
+    "standard": "ARC-3"
+  },
+  "attributes": [
+    {
+      "trait_type": "Primary Type",
+      "value": "Grass"
+    },
+    {
+      "trait_type": "Faction",
+      "value": "Sylvan"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Epic"
+    },
+    {
+      "trait_type": "Evolution Stage",
+      "value": "Stage 3"
+    },
+    {
+      "trait_type": "HP",
+      "value": 97
+    },
+    {
+      "trait_type": "Attack",
+      "value": 91
+    },
+    {
+      "trait_type": "Defense",
+      "value": 98
+    },
+    {
+      "trait_type": "Speed",
+      "value": 82
+    },
+    {
+      "trait_type": "Stamina",
+      "value": 96
+    }
+  ]
+}

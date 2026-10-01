@@ -1,0 +1,59 @@
+{
+  "name": "Obsidimoth \u2014 AlgoCreatures Genesis (#015)",
+  "description": "Obsidimoth (Geo) \u2014 Crystalline volcanic behemoth clad in impervious black glass armor.",
+  "image": "ipfs://bafybeicreaturesgenesis2026series1/creature_015.png",
+  "image_mimetype": "image/png",
+  "external_url": "https://algocreatures.io/species/obsidimoth",
+  "properties": {
+    "species_id": "obsidimoth",
+    "index_number": 15,
+    "species_name": "Obsidimoth",
+    "primary_type": "Earth",
+    "secondary_type": null,
+    "faction": "Geo",
+    "rarity": "Epic",
+    "evolution_family": "gravelit_line",
+    "evolution_stage": 3,
+    "next_evolution_id": null,
+    "generation": "Genesis Series 1",
+    "standard": "ARC-3"
+  },
+  "attributes": [
+    {
+      "trait_type": "Primary Type",
+      "value": "Earth"
+    },
+    {
+      "trait_type": "Faction",
+      "value": "Geo"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Epic"
+    },
+    {
+      "trait_type": "Evolution Stage",
+      "value": "Stage 3"
+    },
+    {
+      "trait_type": "HP",
+      "value": 96
+    },
+    {
+      "trait_type": "Attack",
+      "value": 92
+    },
+    {
+      "trait_type": "Defense",
+      "value": 99
+    },
+    {
+      "trait_type": "Speed",
+      "value": 74
+    },
+    {
+      "trait_type": "Stamina",
+      "value": 97
+    }
+  ]
+}

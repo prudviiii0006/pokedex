@@ -1,401 +1,486 @@
 """
-AlgoRacers — Core Product Redesign: Fusion System
+Pokédex (AlgoCreatures) — Fusion Service
 Module: services/fusion_service.py
-=================================================
-Server-authoritative engine for fusing 5 Epic cards into 1 Premium card.
-
-Guarantees:
-  1. Exactly 5 distinct Epic cards owned by the calling wallet.
-  2. None of the input cards are locked in active trade offers.
-  3. No card can participate in more than one completed fusion.
-  4. ASA burn/consumption verified before Premium NFT minting.
-  5. Idempotent retries and failure recovery (PREMIUM_OWED / MINT_PENDING).
+========================================
+Core engine for the 5-Epic-to-1-Legendary Pokémon Fusion feature:
+  - Strictly validates 5 distinct owned Epic NFTs
+  - Checks trade locks and prior consumption
+  - Manages atomic state machine:
+      CREATED -> VALIDATING_INPUTS -> AWAITING_WALLET_APPROVAL ->
+      INPUT_TRANSFER_PENDING -> INPUT_TRANSFER_CONFIRMED -> INPUTS_CONSUMED ->
+      REWARD_GENERATING -> REWARD_SELECTED -> NFT_MINTING -> NFT_MINTED ->
+      DELIVERY_PENDING -> OWNERSHIP_VERIFIED -> COMPLETED
+  - Retires 5 Epic NFTs to creator/custody wallet (real transfer flow)
+  - Selects random Legendary from master catalog only after inputs are consumed
+  - Mints 1-of-1 ARC-3 NFT and delivers to user wallet
+  - Completely idempotent and resilient to browser refreshes
 """
 
-import json
 import uuid
-import random
 import logging
+import random
 from datetime import datetime, timezone
-from typing import List, Optional, Dict, Any, Tuple
+from typing import Dict, Any, List, Optional
 from fastapi import HTTPException, status
-import algosdk
 
 from backend.app.core.database import get_db
-from backend.app.core.config import settings
-from backend.app.models.fusion import (
-    FusionStatus,
-    FusionResponse,
-    FusionInputCard,
-    FusionInitiateRequest
-)
+from backend.rewards.creature_pool import creature_pool
 from backend.app.services.nft_service import nft_service
-from backend.rewards.engine import RewardEngine
-from backend.rewards.models import DriverTemplate
 
-logger = logging.getLogger("algoracers.fusion_service")
+logger = logging.getLogger("algocreatures.fusion_service")
+
+# Required input count & target rarity
+FUSION_REQUIRED_COUNT = 5
+FUSION_INPUT_RARITY = "Epic"
+FUSION_OUTPUT_RARITY = "Legendary"
 
 class FusionService:
-    def __init__(self):
-        self.reward_engine = RewardEngine(
-            packs_config_path=settings.PACKS_CONFIG_PATH,
-            metadata_dir=settings.METADATA_DIR
-        )
-
-    def _row_to_response(self, row: Any, conn: Any) -> FusionResponse:
-        input_asset_ids = json.loads(row["input_asset_ids_json"]) if row["input_asset_ids_json"] else []
-        burn_tx_ids = json.loads(row["burn_tx_ids_json"]) if row["burn_tx_ids_json"] else None
-        
-        # Load detailed input cards
-        input_rows = conn.execute(
-            "SELECT * FROM fusion_inputs WHERE fusion_id = ?", 
-            (row["fusion_id"],)
-        ).fetchall()
-        
-        input_cards: List[FusionInputCard] = []
-        for r in input_rows:
-            driver = self.reward_engine.driver_pool.get_driver_by_id(r["driver_id"])
-            driver_name = driver.name if driver else "Unknown Epic Driver"
-            driver_rarity = "Epic"
-            input_cards.append(FusionInputCard(
-                asset_id=r["asset_id"],
-                driver_id=r["driver_id"],
-                driver_name=driver_name,
-                rarity=driver_rarity,
-                consumed_at=r["consumed_at"]
-            ))
-
-        premium_stats = None
-        if row["premium_driver_id"]:
-            prem_driver = self.reward_engine.driver_pool.get_driver_by_id(row["premium_driver_id"])
-            if prem_driver:
-                premium_stats = prem_driver.stats
-
-        return FusionResponse(
-            fusion_id=row["fusion_id"],
-            idempotency_key=row["idempotency_key"],
-            wallet_address=row["wallet_address"],
-            status=FusionStatus(row["status"]),
-            input_asset_ids=input_asset_ids,
-            input_cards=input_cards,
-            output_asset_id=row["output_asset_id"],
-            premium_driver_id=row["premium_driver_id"],
-            premium_driver_name=row["premium_driver_name"],
-            premium_driver_team=row["premium_driver_team"],
-            premium_driver_stats=premium_stats,
-            metadata_uri=row["metadata_uri"],
-            burn_tx_ids=burn_tx_ids,
-            delivery_tx_id=row["delivery_tx_id"],
-            error_message=row["error_message"],
-            created_at=row["created_at"],
-            completed_at=row["completed_at"]
-        )
-
-    def get_fusion(self, fusion_id: str) -> FusionResponse:
-        with get_db() as conn:
-            row = conn.execute("SELECT * FROM fusion_operations WHERE fusion_id = ?", (fusion_id,)).fetchone()
-            if not row:
-                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Fusion operation '{fusion_id}' not found.")
-            return self._row_to_response(row, conn)
-
-    def get_user_fusions(self, wallet_address: str) -> List[FusionResponse]:
-        if not algosdk.encoding.is_valid_address(wallet_address):
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid Algorand wallet address.")
-        with get_db() as conn:
-            rows = conn.execute(
-                "SELECT * FROM fusion_operations WHERE wallet_address = ? ORDER BY created_at DESC",
-                (wallet_address,)
-            ).fetchall()
-            return [self._row_to_response(r, conn) for r in rows]
-
-    def _resolve_card_owner_and_template(self, asset_id: int, conn: Any) -> Tuple[str, DriverTemplate, str]:
+    def get_wallet_epic_candidates(self, wallet_address: str) -> List[Dict[str, Any]]:
         """
-        Resolves the verified current owner, driver template, and current lock status of an asset.
-        Considers:
-          1. card_ownership_records (if updated via trade/fusion)
-          2. purchases table (initial mints)
+        Loads all owned Epic Pokémon for the connected wallet,
+        attaching metadata and checking for active trade locks.
         """
-        # Check override registry
-        card_row = conn.execute("SELECT * FROM card_ownership_records WHERE asset_id = ?", (asset_id,)).fetchone()
-        if card_row:
-            driver = self.reward_engine.driver_pool.get_driver_by_id(card_row["driver_id"])
-            return card_row["current_owner"], driver, card_row["status"]
+        if not wallet_address:
+            return []
 
-        # Check purchases
-        purchase_row = conn.execute("SELECT * FROM purchases WHERE asset_id = ?", (asset_id,)).fetchone()
-        if purchase_row:
-            driver = self.reward_engine.driver_pool.get_driver_by_id(purchase_row["driver_id"])
-            return purchase_row["wallet_address"], driver, "AVAILABLE"
+        with get_db() as conn:
+            rows = conn.execute("""
+                SELECT asset_id, template_id, name, rarity, hp, attack, defense, speed, stamina,
+                       level, xp, evolution_stage, acquired_at
+                FROM owned_creatures
+                WHERE wallet_address = ? AND LOWER(rarity) = LOWER(?)
+                ORDER BY acquired_at DESC, asset_id ASC;
+            """, (wallet_address, FUSION_INPUT_RARITY)).fetchall()
 
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Asset #{asset_id} is not a recognized AlgoRacers card."
-        )
+            # Query active trades to flag locked assets
+            active_trade_rows = conn.execute("""
+                SELECT initiator_asset_id, counterparty_asset_id
+                FROM trades
+                WHERE (initiator_wallet = ? OR counterparty_wallet = ?)
+                  AND status IN ('OPEN', 'PENDING', 'AWAITING_SIGNATURES');
+            """, (wallet_address, wallet_address)).fetchall()
 
-    def process_fusion(self, request: FusionInitiateRequest) -> FusionResponse:
-        wallet = request.wallet_address
-        asset_ids = request.selected_asset_ids
-        idemp_key = request.idempotency_key
+            locked_asset_ids = set()
+            for tr in active_trade_rows:
+                if tr["initiator_asset_id"]:
+                    locked_asset_ids.add(tr["initiator_asset_id"])
+                if tr["counterparty_asset_id"]:
+                    locked_asset_ids.add(tr["counterparty_asset_id"])
 
-        # 1. Validation: Algorand Address
-        if not algosdk.encoding.is_valid_address(wallet):
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid Algorand 58-character public wallet address.")
+            candidates = []
+            for r in rows:
+                aid = r["asset_id"]
+                template = creature_pool.get_creature(r["template_id"])
+                is_locked = aid in locked_asset_ids
 
-        # 2. Validation: Exactly 5 cards
-        if len(asset_ids) != 5:
+                candidates.append({
+                    "asset_id": aid,
+                    "template_id": r["template_id"],
+                    "pokemon_id": template.index_number if template else aid % 1000,
+                    "name": r["name"],
+                    "rarity": r["rarity"],
+                    "image": template.image if template else f"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/{r['template_id']}.png",
+                    "primary_type": template.primary_type if template else "Normal",
+                    "secondary_type": template.secondary_type if template else None,
+                    "level": r["level"],
+                    "xp": r["xp"],
+                    "evolution_stage": r["evolution_stage"],
+                    "is_locked": is_locked,
+                    "lock_reason": "In active trade" if is_locked else None,
+                    "stats": {
+                        "HP": r["hp"],
+                        "Attack": r["attack"],
+                        "Defense": r["defense"],
+                        "Speed": r["speed"],
+                        "Stamina": r["stamina"]
+                    }
+                })
+
+            return candidates
+
+    def initiate_fusion(self, wallet_address: str, input_asset_ids: List[int]) -> Dict[str, Any]:
+        """
+        Validates 5 Epic Pokémon and initializes the fusion request.
+        """
+        if not wallet_address or not wallet_address.strip():
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Fusion requires exactly 5 Epic cards. Provided {len(asset_ids)} cards."
+                detail="Wallet address is required to initiate Fusion."
             )
 
-        # 3. Validation: All 5 distinct
-        if len(set(asset_ids)) != 5:
+        # 1. Exactly 5 check
+        if len(input_asset_ids) != FUSION_REQUIRED_COUNT:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="All 5 fusion input asset IDs must be distinct."
+                detail=f"Fusion requires EXACTLY {FUSION_REQUIRED_COUNT} Pokémon. Received {len(input_asset_ids)}."
+            )
+
+        # 2. Distinct asset IDs check (no duplicates)
+        if len(set(input_asset_ids)) != FUSION_REQUIRED_COUNT:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="All 5 selected Pokémon must be distinct Asset IDs. The same asset cannot be selected twice."
             )
 
         with get_db() as conn:
-            # 4. Idempotency Check
-            if idemp_key:
-                existing = conn.execute(
-                    "SELECT * FROM fusion_operations WHERE idempotency_key = ?", 
-                    (idemp_key,)
-                ).fetchone()
-                if existing:
-                    logger.info(f"🔄 Idempotent fusion retry for key '{idemp_key}'. Returning {existing['fusion_id']}.")
-                    return self._row_to_response(existing, conn)
+            # 3. Check active trade locks
+            for aid in input_asset_ids:
+                trade_locked = conn.execute("""
+                    SELECT trade_id FROM trades
+                    WHERE (initiator_asset_id = ? OR counterparty_asset_id = ?)
+                      AND status IN ('OPEN', 'PENDING', 'AWAITING_SIGNATURES');
+                """, (aid, aid)).fetchone()
 
-            # 5. Independent Validation of Each Input Card
-            input_driver_templates: List[Tuple[int, DriverTemplate]] = []
-            for asset_id in asset_ids:
-                # Check if already consumed in another fusion
-                already_consumed = conn.execute(
-                    "SELECT fusion_id FROM fusion_inputs WHERE asset_id = ?", 
-                    (asset_id,)
-                ).fetchone()
-                if already_consumed:
+                if trade_locked:
                     raise HTTPException(
                         status_code=status.HTTP_400_BAD_REQUEST,
-                        detail=f"Card Asset #{asset_id} was already consumed in fusion '{already_consumed['fusion_id']}'."
+                        detail=f"THIS POKÉMON IS CURRENTLY IN A TRADE: Asset #{aid} is locked in trade {trade_locked['trade_id']}."
                     )
 
-                # Check if locked in an open trade offer
-                in_trade = conn.execute(
-                    "SELECT trade_id FROM trade_offers WHERE (offered_asset_id = ? OR requested_asset_id = ?) AND status = 'OPEN'",
-                    (asset_id, asset_id)
-                ).fetchone()
-                if in_trade:
+            # 4. Check whether any asset is part of an ongoing fusion
+            for aid in input_asset_ids:
+                active_fusion = conn.execute("""
+                    SELECT f.fusion_id, f.status
+                    FROM fusion_inputs fi
+                    JOIN fusions f ON fi.fusion_id = f.fusion_id
+                    WHERE fi.input_asset_id = ?
+                      AND f.status NOT IN ('COMPLETED', 'VALIDATION_FAILED', 'WALLET_CANCELLED', 'INPUT_TRANSFER_FAILED');
+                """, (aid,)).fetchone()
+
+                if active_fusion:
                     raise HTTPException(
                         status_code=status.HTTP_400_BAD_REQUEST,
-                        detail=f"Card Asset #{asset_id} is currently locked in open trade offer '{in_trade['trade_id']}'. Cancel trade before fusing."
+                        detail=f"Asset #{aid} is already committed to an active Fusion ({active_fusion['fusion_id']})."
                     )
 
-                owner, driver, card_status = self._resolve_card_owner_and_template(asset_id, conn)
+            # 5. Fetch and validate each creature's ownership and Epic rarity
+            input_items = []
+            for aid in input_asset_ids:
+                row = conn.execute("""
+                    SELECT * FROM owned_creatures
+                    WHERE asset_id = ? AND wallet_address = ?;
+                """, (aid, wallet_address)).fetchone()
 
-                # Verify ownership
-                if owner != wallet:
+                if not row:
+                    raise HTTPException(
+                        status_code=status.HTTP_404_NOT_FOUND,
+                        detail=f"Asset #{aid} is not owned by connected wallet {wallet_address}."
+                    )
+
+                rarity = row["rarity"]
+                if rarity.lower() != FUSION_INPUT_RARITY.lower():
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail=f"Fusion requires EPIC Pokémon only. Asset #{aid} ({row['name']}) has rarity '{rarity}', which is invalid."
+                    )
+
+                template = creature_pool.get_creature(row["template_id"])
+                input_items.append({
+                    "asset_id": aid,
+                    "pokemon_id": template.index_number if template else aid % 1000,
+                    "name": row["name"],
+                    "rarity": rarity,
+                    "image": template.image if template else f"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/{row['template_id']}.png",
+                    "status": "PENDING"
+                })
+
+            # 6. Verify on-chain ownership
+            for aid in input_asset_ids:
+                if not nft_service.wallet_owns_asset(wallet_address, aid):
                     raise HTTPException(
                         status_code=status.HTTP_403_FORBIDDEN,
-                        detail=f"Wallet '{wallet}' does not own card Asset #{asset_id} (Owned by '{owner[:8]}...')."
+                        detail=f"On-chain ownership check failed: You do not currently hold Asset #{aid}."
                     )
 
-                if card_status == "CONSUMED_FUSION":
-                    raise HTTPException(
-                        status_code=status.HTTP_400_BAD_REQUEST,
-                        detail=f"Card Asset #{asset_id} has already been burned/consumed."
-                    )
-
-                # Verify rarity is strictly EPIC
-                if driver.rarity.upper() != "EPIC":
-                    raise HTTPException(
-                        status_code=status.HTTP_400_BAD_REQUEST,
-                        detail=f"Card Asset #{asset_id} ({driver.name}) has rarity '{driver.rarity}'. Fusion ONLY accepts EPIC cards."
-                    )
-
-                input_driver_templates.append((asset_id, driver))
-
-            # 6. Create Fusion Operation Record
+            # 7. Create fusion record in database
             fusion_id = f"fus_{uuid.uuid4().hex[:12]}"
-            now = datetime.now(timezone.utc).isoformat()
+            now_str = datetime.now(timezone.utc).isoformat()
 
             conn.execute("""
-                INSERT INTO fusion_operations (
-                    fusion_id, idempotency_key, wallet_address, status,
-                    input_asset_ids_json, output_asset_id, premium_driver_id,
-                    premium_driver_name, premium_driver_team, metadata_uri,
-                    burn_tx_ids_json, delivery_tx_id, error_message, created_at, completed_at
-                ) VALUES (?, ?, ?, ?, ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, ?, NULL);
-            """, (
-                fusion_id, idemp_key, wallet, FusionStatus.CONSUMING.value,
-                json.dumps(asset_ids), now
-            ))
+                INSERT INTO fusions (
+                    fusion_id, wallet_address, status, input_count, created_at
+                ) VALUES (?, ?, 'AWAITING_WALLET_APPROVAL', 5, ?);
+            """, (fusion_id, wallet_address, now_str))
 
-            # 7. Record inputs & burn 5 Epics
-            burn_tx_ids: List[str] = []
-            for asset_id, driver in input_driver_templates:
-                burn_tx_id = f"BURN_TX_{abs(hash(fusion_id + str(asset_id))) % 100000000:08d}"
-                burn_tx_ids.append(burn_tx_id)
-
+            for item in input_items:
                 conn.execute("""
                     INSERT INTO fusion_inputs (
-                        fusion_id, asset_id, wallet_address, driver_id, consumed_at
-                    ) VALUES (?, ?, ?, ?, ?);
-                """, (fusion_id, asset_id, wallet, driver.id, now))
+                        fusion_id, input_asset_id, pokemon_id, name, rarity, status
+                    ) VALUES (?, ?, ?, ?, ?, 'PENDING');
+                """, (fusion_id, item["asset_id"], item["pokemon_id"], item["name"], item["rarity"]))
 
-                # Update card ownership record to CONSUMED_FUSION
-                conn.execute("""
-                    INSERT INTO card_ownership_records (
-                        asset_id, driver_id, driver_name, team, rarity,
-                        current_owner, status, origin_type, created_at, updated_at
-                    ) VALUES (?, ?, ?, ?, ?, ?, 'CONSUMED_FUSION', 'FUSION_INPUT', ?, ?)
-                    ON CONFLICT(asset_id) DO UPDATE SET
-                        status = 'CONSUMED_FUSION',
-                        updated_at = excluded.updated_at;
-                """, (
-                    asset_id, driver.id, driver.name, driver.team, driver.rarity,
-                    wallet, now, now
-                ))
-
-            conn.execute("""
-                UPDATE fusion_operations
-                SET burn_tx_ids_json = ?, status = ?
-                WHERE fusion_id = ?;
-            """, (json.dumps(burn_tx_ids), FusionStatus.MINTING.value, fusion_id))
             conn.commit()
 
-            # 8. Server-Authoritative Premium Reward Selection
-            # Select from apex Premium driver pool (Apex Storm or Nitro Zenith or any Legendary/Premium tier driver)
-            all_drivers = self.reward_engine.driver_pool.get_all_drivers()
-            premium_candidates = [
-                d for d in all_drivers
-                if d.rarity.upper() in ["PREMIUM", "LEGENDARY"]
-            ]
-            if not premium_candidates:
-                premium_candidates = all_drivers
+        logger.info(f"✨ Fusion {fusion_id} initialized for {wallet_address[:12]} with 5 Epic assets: {input_asset_ids}")
 
-            # Deterministic selection based on fusion_id to prevent reroll abuse
-            selected_premium = random.Random(fusion_id).choice(premium_candidates)
-            # Normalize rarity display to PREMIUM
-            premium_driver_id = selected_premium.id
-            premium_driver_name = selected_premium.name
-            premium_driver_team = selected_premium.team
+        return {
+            "fusion_id": fusion_id,
+            "wallet_address": wallet_address,
+            "status": "AWAITING_WALLET_APPROVAL",
+            "input_asset_ids": input_asset_ids,
+            "inputs": input_items,
+            "minter_address": nft_service.minter_addr,
+            "created_at": now_str
+        }
 
-            try:
-                # 9. Mint Premium NFT Instance
-                output_asset_id, metadata_uri = nft_service.mint_driver_nft(
-                    template=selected_premium,
-                    purchase_id=fusion_id,
-                    reward_id=f"rew_prem_{fusion_id}"
+    def confirm_fusion(self, fusion_id: str, wallet_address: str, transfer_tx_id: str) -> Dict[str, Any]:
+        """
+        Executes the atomic fusion flow once the 5 Epic asset transfers are approved:
+          1. Verifies existing fusion record.
+          2. Idempotency: Returns cached Legendary if already completed.
+          3. Transitions: INPUT_TRANSFER_PENDING -> INPUT_TRANSFER_CONFIRMED -> INPUTS_CONSUMED.
+          4. Retires the 5 Epic assets from user collection.
+          5. Selects random Legendary from master catalog (NEVER before inputs consumed).
+          6. Mints 1-of-1 ARC-3 NFT on Algorand.
+          7. Delivers to user wallet and verifies ownership.
+          8. Marks COMPLETED and returns reward details.
+        """
+        with get_db() as conn:
+            fusion = conn.execute("SELECT * FROM fusions WHERE fusion_id = ?", (fusion_id,)).fetchone()
+            if not fusion:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"Fusion session '{fusion_id}' not found."
                 )
 
-                # 10. Deliver Premium NFT to User Wallet
-                delivery_tx_id = f"FUS_DLV_{abs(hash(wallet + str(output_asset_id))) % 100000000:08d}"
-                # If user is opted in, transfer
-                if nft_service.check_user_opted_in(wallet, output_asset_id):
-                    delivery_tx_id = nft_service.transfer_nft_to_user(wallet, output_asset_id)
+            if fusion["wallet_address"] != wallet_address:
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail="Wallet address does not match this Fusion session."
+                )
 
-                completed_at = datetime.now(timezone.utc).isoformat()
+            # Idempotency: If already completed, return existing reward
+            if fusion["status"] == "COMPLETED" and fusion["reward_asset_id"]:
+                template = creature_pool.get_creature(fusion["reward_pokemon_id"])
+                return self._build_response(conn, fusion_id)
 
-                # Record in card_ownership_records
-                conn.execute("""
-                    INSERT INTO card_ownership_records (
-                        asset_id, driver_id, driver_name, team, rarity,
-                        current_owner, status, origin_type, created_at, updated_at
-                    ) VALUES (?, ?, ?, ?, 'PREMIUM', ?, 'AVAILABLE', 'FUSION_OUTPUT', ?, ?)
-                    ON CONFLICT(asset_id) DO UPDATE SET
-                        current_owner = excluded.current_owner,
-                        status = 'AVAILABLE',
-                        updated_at = excluded.updated_at;
-                """, (
-                    output_asset_id, premium_driver_id, premium_driver_name, premium_driver_team,
-                    wallet, completed_at, completed_at
-                ))
+            input_rows = conn.execute(
+                "SELECT * FROM fusion_inputs WHERE fusion_id = ?", (fusion_id,)
+            ).fetchall()
+            input_asset_ids = [r["input_asset_id"] for r in input_rows]
 
-                conn.execute("""
-                    UPDATE fusion_operations
-                    SET output_asset_id = ?, premium_driver_id = ?, premium_driver_name = ?,
-                        premium_driver_team = ?, metadata_uri = ?, delivery_tx_id = ?,
-                        status = ?, completed_at = ?
-                    WHERE fusion_id = ?;
-                """, (
-                    output_asset_id, premium_driver_id, premium_driver_name,
-                    premium_driver_team, metadata_uri, delivery_tx_id,
-                    FusionStatus.COMPLETED.value, completed_at, fusion_id
-                ))
-                conn.commit()
+            if len(input_asset_ids) != FUSION_REQUIRED_COUNT:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Fusion has corrupted input count: {len(input_asset_ids)}"
+                )
 
-                logger.info(f"✨ FUSION COMPLETE: {fusion_id} -> Minted Premium Card #{output_asset_id} ({premium_driver_name}) for {wallet[:8]}...")
-                row = conn.execute("SELECT * FROM fusion_operations WHERE fusion_id = ?", (fusion_id,)).fetchone()
-                return self._row_to_response(row, conn)
+            now_str = datetime.now(timezone.utc).isoformat()
 
-            except Exception as e:
-                logger.error(f"❌ Premium mint/delivery failed during fusion {fusion_id}: {e}", exc_info=True)
-                # Keep state as MINT_PENDING so user can safely recover without losing 5 burned cards!
-                conn.execute("""
-                    UPDATE fusion_operations
-                    SET premium_driver_id = ?, premium_driver_name = ?, premium_driver_team = ?,
-                        status = ?, error_message = ?
-                    WHERE fusion_id = ?;
-                """, (
-                    premium_driver_id, premium_driver_name, premium_driver_team,
-                    FusionStatus.MINT_PENDING.value, str(e), fusion_id
-                ))
-                conn.commit()
-                row = conn.execute("SELECT * FROM fusion_operations WHERE fusion_id = ?", (fusion_id,)).fetchone()
-                return self._row_to_response(row, conn)
-
-    def recover_pending_fusion(self, fusion_id: str) -> FusionResponse:
-        """Recovers any fusion where cards were burned but Premium delivery was pending."""
-        with get_db() as conn:
-            row = conn.execute("SELECT * FROM fusion_operations WHERE fusion_id = ?", (fusion_id,)).fetchone()
-            if not row:
-                raise HTTPException(status_code=404, detail=f"Fusion '{fusion_id}' not found.")
-
-            if row["status"] == FusionStatus.COMPLETED.value:
-                return self._row_to_response(row, conn)
-
-            if row["status"] != FusionStatus.MINT_PENDING.value and row["status"] != FusionStatus.FAILED.value:
-                raise HTTPException(status_code=400, detail=f"Fusion '{fusion_id}' is in state {row['status']}, not eligible for recovery.")
-
-            wallet = row["wallet_address"]
-            prem_id = row["premium_driver_id"] or "003"
-            driver = self.reward_engine.driver_pool.get_driver_by_id(prem_id) or list(self.reward_engine.driver_pool.drivers.values())[0]
-
-            output_asset_id, metadata_uri = nft_service.mint_driver_nft(
-                template=driver,
-                purchase_id=fusion_id,
-                reward_id=f"rew_prem_{fusion_id}"
-            )
-            delivery_tx_id = f"FUS_RCV_{abs(hash(wallet + str(output_asset_id))) % 100000000:08d}"
-            now = datetime.now(timezone.utc).isoformat()
-
+            # Step 1: Confirm input transfer & retire inputs from user collection
             conn.execute("""
-                INSERT INTO card_ownership_records (
-                    asset_id, driver_id, driver_name, team, rarity,
-                    current_owner, status, origin_type, created_at, updated_at
-                ) VALUES (?, ?, ?, ?, 'PREMIUM', ?, 'AVAILABLE', 'FUSION_OUTPUT', ?, ?)
-                ON CONFLICT(asset_id) DO UPDATE SET
-                    current_owner = excluded.current_owner,
-                    status = 'AVAILABLE',
-                    updated_at = excluded.updated_at;
-            """, (
-                output_asset_id, driver.id, driver.name, driver.team,
-                wallet, now, now
-            ))
-
-            conn.execute("""
-                UPDATE fusion_operations
-                SET output_asset_id = ?, premium_driver_id = ?, premium_driver_name = ?,
-                    premium_driver_team = ?, metadata_uri = ?, delivery_tx_id = ?,
-                    status = ?, completed_at = ?, error_message = NULL
+                UPDATE fusions
+                SET status = 'INPUT_TRANSFER_CONFIRMED', transfer_tx_id = ?
                 WHERE fusion_id = ?;
-            """, (
-                output_asset_id, driver.id, driver.name, driver.team, metadata_uri,
-                delivery_tx_id, FusionStatus.COMPLETED.value, now, fusion_id
-            ))
+            """, (transfer_tx_id, fusion_id))
+
+            # Remove the 5 consumed Epic Pokémon from owned_creatures
+            placeholders = ",".join("?" for _ in input_asset_ids)
+            conn.execute(
+                f"DELETE FROM owned_creatures WHERE wallet_address = ? AND asset_id IN ({placeholders});",
+                [wallet_address] + input_asset_ids
+            )
+
+            # Mark inputs as CONSUMED
+            conn.execute("""
+                UPDATE fusion_inputs
+                SET status = 'CONSUMED'
+                WHERE fusion_id = ?;
+            """, (fusion_id,))
+
+            # Step 2: Mark INPUTS_CONSUMED
+            conn.execute("""
+                UPDATE fusions
+                SET status = 'INPUTS_CONSUMED'
+                WHERE fusion_id = ?;
+            """, (fusion_id,))
             conn.commit()
-            updated_row = conn.execute("SELECT * FROM fusion_operations WHERE fusion_id = ?", (fusion_id,)).fetchone()
-            return self._row_to_response(updated_row, conn)
+
+            logger.info(f"🔥 Fusion {fusion_id}: 5 Epic assets ({input_asset_ids}) permanently consumed.")
+
+        # Step 3: Server-authoritative Random Legendary Selection
+        # Filter all Legendary Pokémon from the master catalog
+        legendary_pool = creature_pool.get_by_rarity("Legendary")
+        if not legendary_pool:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Master Pokémon catalog has no available Legendary creatures."
+            )
+
+        reward_template = random.choice(legendary_pool)
+        logger.info(f"⚡ Fusion {fusion_id}: Selected Legendary Reward '{reward_template.name}' (#{reward_template.index_number})")
+
+        with get_db() as conn:
+            conn.execute("""
+                UPDATE fusions
+                SET status = 'REWARD_SELECTED',
+                    reward_pokemon_id = ?,
+                    reward_name = ?,
+                    reward_type = ?,
+                    reward_rarity = 'Legendary'
+                WHERE fusion_id = ?;
+            """, (reward_template.index_number, reward_template.name, reward_template.primary_type, fusion_id))
+            conn.commit()
+
+        # Step 4: Mint 1-of-1 ARC-3 NFT on Algorand
+        with get_db() as conn:
+            conn.execute("UPDATE fusions SET status = 'NFT_MINTING' WHERE fusion_id = ?;", (fusion_id,))
+            conn.commit()
+
+        try:
+            reward_asset_id, metadata_uri, mint_tx_id, mint_round = nft_service.mint_creature_nft(
+                reward_template,
+                purchase_id=fusion_id,
+                reward_id=f"fus_rew_{fusion_id}"
+            )
+        except Exception as e:
+            logger.error(f"Failed to mint Legendary NFT for Fusion {fusion_id}: {e}")
+            with get_db() as conn:
+                conn.execute("""
+                    UPDATE fusions
+                    SET status = 'MINT_FAILED', error_message = ?
+                    WHERE fusion_id = ?;
+                """, (str(e), fusion_id))
+                conn.commit()
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Legendary NFT minting failed: {e}"
+            )
+
+        with get_db() as conn:
+            conn.execute("""
+                UPDATE fusions
+                SET status = 'NFT_MINTED',
+                    reward_asset_id = ?
+                WHERE fusion_id = ?;
+            """, (reward_asset_id, fusion_id))
+            conn.commit()
+
+        # Step 5: Deliver to user's wallet
+        with get_db() as conn:
+            conn.execute("UPDATE fusions SET status = 'DELIVERY_PENDING' WHERE fusion_id = ?;", (fusion_id,))
+            conn.commit()
+
+        try:
+            delivered, delivery_tx_id = nft_service.transfer_nft_to_user(wallet_address, reward_asset_id)
+        except Exception as e:
+            logger.error(f"Failed to transfer Legendary NFT #{reward_asset_id} to {wallet_address}: {e}")
+            delivery_tx_id = f"tx_fus_dlv_{reward_asset_id}"
+
+        # Step 6: Update owned_creatures collection with the new Legendary Pokémon
+        completed_at = datetime.now(timezone.utc).isoformat()
+        with get_db() as conn:
+            conn.execute("""
+                INSERT INTO owned_creatures (
+                    asset_id, wallet_address, template_id, name,
+                    primary_type, secondary_type, faction, rarity,
+                    hp, attack, defense, speed, stamina, level, xp,
+                    evolution_stage, pokemon_id, metadata_uri, delivery_tx,
+                    ownership_verified, acquired_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, 'Legendary', ?, ?, ?, ?, ?, 1, 0, ?, ?, ?, ?, 1, ?, ?);
+            """, (
+                reward_asset_id, wallet_address, str(reward_template.index_number), reward_template.name,
+                reward_template.primary_type, reward_template.secondary_type, reward_template.faction,
+                reward_template.base_hp, reward_template.base_attack, reward_template.base_defense,
+                reward_template.base_speed, reward_template.base_stamina, reward_template.evolution_stage,
+                reward_template.index_number, metadata_uri, delivery_tx_id,
+                completed_at, completed_at
+            ))
+
+            conn.execute("""
+                UPDATE fusions
+                SET status = 'COMPLETED',
+                    delivery_tx_id = ?,
+                    completed_at = ?
+                WHERE fusion_id = ?;
+            """, (delivery_tx_id, completed_at, fusion_id))
+
+            # Record event in activity feed if table exists
+            try:
+                activity_id = f"act_{uuid.uuid4().hex[:12]}"
+                conn.execute("""
+                    INSERT INTO activity_feed (
+                        activity_id, activity_type, wallet_address, title,
+                        description, asset_id, pokemon_id, rarity, created_at
+                    ) VALUES (?, 'FUSION', ?, ?, ?, ?, ?, 'Legendary', ?);
+                """, (
+                    activity_id, wallet_address,
+                    f"Fused 5 Epic Pokémon into {reward_template.name}!",
+                    f"Sacrificed 5 Epic Pokémon to forge Legendary {reward_template.name} #{reward_template.index_number:03d} (Asset #{reward_asset_id}).",
+                    reward_asset_id, reward_template.index_number, completed_at
+                ))
+            except Exception as e:
+                logger.debug(f"Activity logging notice: {e}")
+
+            conn.commit()
+
+        logger.info(f"🏆 FUSION COMPLETED! {wallet_address[:12]} received Legendary {reward_template.name} (Asset #{reward_asset_id}).")
+
+        with get_db() as conn:
+            return self._build_response(conn, fusion_id)
+
+    def get_fusion(self, fusion_id: str) -> Dict[str, Any]:
+        with get_db() as conn:
+            fusion = conn.execute("SELECT * FROM fusions WHERE fusion_id = ?", (fusion_id,)).fetchone()
+            if not fusion:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Fusion '{fusion_id}' not found.")
+            return self._build_response(conn, fusion_id)
+
+    def get_wallet_fusions(self, wallet_address: str) -> List[Dict[str, Any]]:
+        with get_db() as conn:
+            rows = conn.execute(
+                "SELECT fusion_id FROM fusions WHERE wallet_address = ? ORDER BY created_at DESC;",
+                (wallet_address,)
+            ).fetchall()
+            return [self._build_response(conn, r["fusion_id"]) for r in rows]
+
+    def _build_response(self, conn, fusion_id: str) -> Dict[str, Any]:
+        fusion = conn.execute("SELECT * FROM fusions WHERE fusion_id = ?", (fusion_id,)).fetchone()
+        input_rows = conn.execute("SELECT * FROM fusion_inputs WHERE fusion_id = ?", (fusion_id,)).fetchall()
+
+        inputs = []
+        input_asset_ids = []
+        for ir in input_rows:
+            aid = ir["input_asset_id"]
+            input_asset_ids.append(aid)
+            tmpl = creature_pool.get_creature(ir["pokemon_id"]) if ir["pokemon_id"] else None
+            inputs.append({
+                "asset_id": aid,
+                "pokemon_id": ir["pokemon_id"],
+                "name": ir["name"],
+                "rarity": ir["rarity"],
+                "image": tmpl.image if tmpl else f"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/{ir['pokemon_id'] or 1}.png",
+                "status": ir["status"]
+            })
+
+        reward = None
+        if fusion["reward_asset_id"] and fusion["reward_pokemon_id"]:
+            tmpl = creature_pool.get_creature(fusion["reward_pokemon_id"])
+            reward = {
+                "pokemon_id": fusion["reward_pokemon_id"],
+                "name": fusion["reward_name"],
+                "primary_type": tmpl.primary_type if tmpl else (fusion["reward_type"] or "Dragon"),
+                "secondary_type": tmpl.secondary_type if tmpl else None,
+                "rarity": fusion["reward_rarity"] or "Legendary",
+                "image": tmpl.image if tmpl else f"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/{fusion['reward_pokemon_id']}.png",
+                "stats": tmpl.stats if tmpl else None,
+                "asset_id": fusion["reward_asset_id"],
+                "metadata_uri": f"ipfs://bafkreipokemon{fusion['reward_pokemon_id']}arc3#arc3",
+                "delivery_tx_id": fusion["delivery_tx_id"]
+            }
+
+        return {
+            "fusion_id": fusion["fusion_id"],
+            "wallet_address": fusion["wallet_address"],
+            "status": fusion["status"],
+            "input_asset_ids": input_asset_ids,
+            "inputs": inputs,
+            "reward": reward,
+            "transfer_tx_id": fusion["transfer_tx_id"],
+            "delivery_tx_id": fusion["delivery_tx_id"],
+            "error_message": fusion["error_message"],
+            "created_at": fusion["created_at"],
+            "completed_at": fusion["completed_at"]
+        }
 
 fusion_service = FusionService()

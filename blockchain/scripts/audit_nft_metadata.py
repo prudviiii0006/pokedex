@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AlgoRacers — Session 17: NFT Metadata Audit Tool
+Pokédex — NFT Metadata Audit Tool
 Module: blockchain/scripts/audit_nft_metadata.py
 ================================================
 Audits database NFT records and ASA metadata URIs against the collection manifest.
@@ -20,7 +20,7 @@ MANIFEST_PATH = root_dir / "blockchain" / "metadata" / "manifest.json"
 
 def audit_all_nfts():
     print("=" * 75)
-    print("🏎️  ALGORACERS — ON-CHAIN / DATABASE NFT METADATA AUDITOR")
+    print("⚡  POKÉDEX — ON-CHAIN / DATABASE NFT METADATA AUDITOR")
     print("=" * 75)
 
     if not MANIFEST_PATH.exists():

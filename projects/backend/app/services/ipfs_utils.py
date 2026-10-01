@@ -1,5 +1,5 @@
 """
-AlgoRacers — Session 17: Backend IPFS & CID Utilities
+Pokédex — Backend IPFS & CID Utilities
 Module: services/ipfs_utils.py
 =====================================================
 Cryptographic content addressing, canonical serialization, and multi-gateway resolution.
@@ -13,8 +13,8 @@ from typing import Dict, Any, List
 DEFAULT_IPFS_GATEWAYS = [
     "https://ipfs.io/ipfs/",
     "https://dweb.link/ipfs/",
-    "https://cloudflare-ipfs.com/ipfs/",
-    "https://gateway.pinata.cloud/ipfs/"
+    "https://w3s.link/ipfs/",
+    "https://nftstorage.link/ipfs/"
 ]
 
 def compute_sha256_hex(content: bytes) -> str:

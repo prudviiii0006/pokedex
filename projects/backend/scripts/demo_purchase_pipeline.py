@@ -1,5 +1,5 @@
 """
-AlgoRacers — Direct Pack Purchase Pipeline Demo
+Pokédex — Direct Pack Purchase Pipeline Demo
 Script: demo_purchase_pipeline.py
 ================================================
 Autonomous End-to-End Pipeline Execution:
@@ -22,11 +22,12 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+API_BASE_URL = os.getenv("API_BASE_URL", "http://127.0.0.1:8001")
 DEMO_BUYER_MNEMONIC = os.getenv("TESTNET_BUYER_MNEMONIC", "").strip()
 
 def main():
     print("=" * 80)
-    print("🏎️  ALGORACERS — DIRECT PURCHASE ➔ REWARD ➔ NFT PIPELINE")
+    print("⚡  POKÉDEX — DIRECT PURCHASE ➔ REWARD ➔ NFT PIPELINE")
     print("=" * 80)
 
     # 1. Setup Buyer Account
@@ -63,7 +64,8 @@ def main():
     print(f"   • Status:          {purchase['status']}")
     print(f"   • Payment Status:  {purchase['payment_status']}")
     print(f"   • Reward ID:       {purchase['reward_id']}")
-    print(f"   • Rolled Driver:   {purchase['driver_name']} ({purchase['rarity']})")
+    creature_name = purchase.get('creature_name') or purchase.get('driver_name')
+    print(f"   • Rolled Pokémon:  {creature_name} ({purchase['rarity']})")
     print(f"   • Minted Asset ID: {purchase['asset_id']}")
     print(f"   • Metadata URI:    {purchase['metadata_uri']}")
 

@@ -1,5 +1,5 @@
 """
-AlgoRacers — Session 12: Algorand TestNet E2E Integration Suite
+Pokédex — Algorand TestNet E2E Integration Suite
 ==============================================================
 Explicitly marked TestNet Integration test.
 Verifies Algod node connectivity, TestNet genesis, and account lookup.

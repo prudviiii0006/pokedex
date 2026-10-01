@@ -1,5 +1,5 @@
 """
-AlgoRacers — Session 13: Cryptographic Security & Session Verification
+Pokédex — Cryptographic Security & Session Verification
 Module: core/security.py
 =====================================================================
 Cryptographic ed25519 signature verification against Algorand base32 addresses,
@@ -20,7 +20,7 @@ import nacl.exceptions
 
 from backend.app.core.database import get_db
 
-logger = logging.getLogger("algoracers.security")
+logger = logging.getLogger("pokedex.security")
 
 def generate_secure_nonce(length_bytes: int = 16) -> str:
     """Generates a cryptographically secure random hexadecimal nonce."""
@@ -81,7 +81,7 @@ def get_session_from_request(request: Request, authorization: Optional[str] = He
     
     # 2. Fallback to HttpOnly Cookie
     if not session_id:
-        session_id = request.cookies.get("algoracers_session")
+        session_id = request.cookies.get("pokedex_session")
 
     if not session_id:
         return None

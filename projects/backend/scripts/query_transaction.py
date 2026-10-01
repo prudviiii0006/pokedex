@@ -1,5 +1,5 @@
 """
-AlgoRacers — Session 1: Algorand Fundamentals
+Pokédex — Algorand Fundamentals
 Script: query_transaction.py
 =============================================
 Demonstrates querying historical blockchain data using the Algorand Indexer.
@@ -27,7 +27,7 @@ def get_indexer_client() -> indexer.IndexerClient:
 
 def main():
     print("=" * 65)
-    print("🏎️  ALGORACERS — QUERY BLOCKCHAIN VIA INDEXER")
+    print("⚡  POKÉDEX — QUERY BLOCKCHAIN VIA INDEXER")
     print("=" * 65)
 
     client = get_indexer_client()
@@ -109,9 +109,9 @@ def main():
             print(f"❌ Account history query error: {e}")
 
     print("\n" + "=" * 65)
-    print("💡 WHY INDEXER IS CRITICAL FOR ALGORACERS:")
-    print("FastAPI uses the Indexer to search a player's transaction history,")
-    print("verify past pack purchase receipts, and populate garage asset dashboards")
+    print("💡 WHY INDEXER IS CRITICAL FOR POKÉDEX:")
+    print("FastAPI uses the Indexer to search a trainer's transaction history,")
+    print("verify past pack purchase receipts, and populate collection asset dashboards")
     print("without putting heavy search loads on the real-time Algod consensus node.")
     print("=" * 65)
 

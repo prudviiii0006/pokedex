@@ -1,0 +1,59 @@
+{
+  "name": "Blizzardfang \u2014 AlgoCreatures Genesis (#018)",
+  "description": "Blizzardfang (Glacier) \u2014 Apex winter beast commanding devastating blizzards that lock rivals in deep freeze.",
+  "image": "ipfs://bafybeicreaturesgenesis2026series1/creature_018.png",
+  "image_mimetype": "image/png",
+  "external_url": "https://algocreatures.io/species/blizzardfang",
+  "properties": {
+    "species_id": "blizzardfang",
+    "index_number": 18,
+    "species_name": "Blizzardfang",
+    "primary_type": "Ice",
+    "secondary_type": null,
+    "faction": "Glacier",
+    "rarity": "Epic",
+    "evolution_family": "frostkit_line",
+    "evolution_stage": 3,
+    "next_evolution_id": null,
+    "generation": "Genesis Series 1",
+    "standard": "ARC-3"
+  },
+  "attributes": [
+    {
+      "trait_type": "Primary Type",
+      "value": "Ice"
+    },
+    {
+      "trait_type": "Faction",
+      "value": "Glacier"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Epic"
+    },
+    {
+      "trait_type": "Evolution Stage",
+      "value": "Stage 3"
+    },
+    {
+      "trait_type": "HP",
+      "value": 92
+    },
+    {
+      "trait_type": "Attack",
+      "value": 95
+    },
+    {
+      "trait_type": "Defense",
+      "value": 91
+    },
+    {
+      "trait_type": "Speed",
+      "value": 89
+    },
+    {
+      "trait_type": "Stamina",
+      "value": 92
+    }
+  ]
+}

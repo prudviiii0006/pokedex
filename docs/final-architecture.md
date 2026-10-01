@@ -1,11 +1,11 @@
-# AlgoRacers — Final System Architecture
+# Pokédex — Final System Architecture
 
 ```text
                                   USER BROWSER
                                        │
                                        ▼
                         ┌─────────────────────────────┐
-                        │   AlgoRacers Frontend UI    │
+                        │     Pokédex Frontend UI     │
                         │    (React + TypeScript)     │
                         └──────────────┬──────────────┘
                                        │

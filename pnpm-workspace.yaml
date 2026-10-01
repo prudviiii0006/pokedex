@@ -1,0 +1,4 @@
+packages:
+  - 'x402/**'
+allowBuilds:
+  esbuild: true

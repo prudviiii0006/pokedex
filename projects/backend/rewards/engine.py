@@ -1,9 +1,9 @@
 """
-AlgoRacers — Session 5: Pack & Reward System
-Module: engine.py
-============================================
-The core Reward Engine orchestrating pack validation, rarity rolling,
-driver selection, and deterministic reward result generation.
+AlgoCreatures — Pack & Reward Engine
+Module: rewards/engine.py
+====================================
+Orchestrates pack validation, weighted rarity rolling, creature species
+selection, and deterministic reward result generation.
 """
 
 import json
@@ -12,9 +12,9 @@ import random
 from typing import Dict, Optional
 import uuid
 
-from backend.rewards.models import PackConfig, RewardResult, DriverTemplate
+from backend.rewards.models import PackConfig, RewardResult, CreatureTemplate
 from backend.rewards.rarity import select_rarity, validate_rarity_weights
-from backend.rewards.driver_pool import DriverPool
+from backend.rewards.creature_pool import CreaturePool, creature_pool
 
 class RewardEngine:
     def __init__(self, packs_config_path: Optional[Path] = None, metadata_dir: Optional[Path] = None):
@@ -23,7 +23,9 @@ class RewardEngine:
         else:
             self.config_path = packs_config_path
 
-        self.driver_pool = DriverPool(metadata_dir=metadata_dir)
+        self.creature_pool = CreaturePool()
+        # Backward compatibility alias
+        self.driver_pool = self.creature_pool
         self.packs: Dict[str, PackConfig] = {}
         self.load_pack_configurations()
 
@@ -37,20 +39,18 @@ class RewardEngine:
 
         self.packs.clear()
         for pack_id, cfg in raw_packs.items():
-            # Validate pack structure
             if cfg.get("price", 0) < 0:
                 raise ValueError(f"Pack '{pack_id}' cannot have a negative price.")
             if not cfg.get("currency"):
                 raise ValueError(f"Pack '{pack_id}' is missing a currency definition.")
-            if cfg.get("reward_count", 0) != 1:
-                raise ValueError(f"Pack '{pack_id}' reward_count must be 1 for current engine.")
+            if cfg.get("reward_count", 0) < 1:
+                raise ValueError(f"Pack '{pack_id}' reward_count must be at least 1.")
 
             rarities = cfg.get("rarities", {})
             validate_rarity_weights(rarities)
 
-            # Ensure driver pool has drivers for every rarity with weight > 0
             active_rarities = [r for r, w in rarities.items() if w > 0]
-            self.driver_pool.validate_coverage(active_rarities)
+            self.creature_pool.validate_coverage(active_rarities)
 
             pack_obj = PackConfig(
                 id=pack_id,
@@ -61,6 +61,8 @@ class RewardEngine:
                 description=cfg.get("description", ""),
                 rarities=rarities
             )
+            # Store extra metadata like type_pool on pack_obj if present
+            setattr(pack_obj, "type_pool", cfg.get("type_pool"))
             self.packs[pack_id] = pack_obj
 
     def open_pack(
@@ -72,7 +74,7 @@ class RewardEngine:
         """
         Executes a single pack opening:
           1. Selects rarity via weighted sampling
-          2. Selects a driver from the corresponding pool
+          2. Selects a creature from the corresponding pool (filtered by type_pool if configured)
           3. Emits an immutable RewardResult with unique reward_id
         """
         if pack_id not in self.packs:
@@ -83,8 +85,28 @@ class RewardEngine:
         # 1. Rarity Selection
         selected_rarity = select_rarity(pack, rng=rng)
 
-        # 2. Driver Selection from Rarity Pool
-        selected_driver = self.driver_pool.select_driver(selected_rarity, rng=rng)
+        # 2. Creature Selection from Rarity Pool (optionally filtered by type_pool)
+        type_pool = getattr(pack, "type_pool", None)
+        generator = rng if rng is not None else random
+        candidate_pool = self.creature_pool.get_by_rarity(selected_rarity)
+        
+        if type_pool and isinstance(type_pool, list):
+            norm_types = [t.lower().strip() for t in type_pool]
+            filtered = [
+                c for c in candidate_pool 
+                if c.primary_type.lower() in norm_types or (c.secondary_type and c.secondary_type.lower() in norm_types) or c.faction.lower() in norm_types
+            ]
+            if filtered:
+                selected_creature = generator.choice(filtered)
+            else:
+                # Fallback to any species matching the type across all rarities
+                all_matching = [
+                    c for c in self.creature_pool.get_all_creatures()
+                    if c.primary_type.lower() in norm_types or (c.secondary_type and c.secondary_type.lower() in norm_types) or c.faction.lower() in norm_types
+                ]
+                selected_creature = generator.choice(all_matching) if all_matching else self.creature_pool.select_creature(selected_rarity, rng=rng)
+        else:
+            selected_creature = self.creature_pool.select_creature(selected_rarity, rng=rng)
 
         # 3. Create Unique Reward Instance
         reward_id = f"rew_{uuid.uuid4().hex[:12]}"
@@ -94,53 +116,23 @@ class RewardEngine:
             pack_id=pack.id,
             pack_name=pack.name,
             rarity=selected_rarity,
-            driver=selected_driver,
+            creature=selected_creature,
             purchase_id=purchase_id
         )
 
     def trace_pack_opening(self, pack_id: str, rng: Optional[random.Random] = None) -> RewardResult:
-        """Runs a verbose step-by-step trace of a single pack opening."""
-        print("=" * 65)
-        print(f"🏎️  ALGORACERS REWARD ENGINE — PACK OPENING TRACE")
-        print("=" * 65)
-
+        """Runs a step-by-step trace of a single pack opening."""
         if pack_id not in self.packs:
             raise KeyError(f"Unknown pack '{pack_id}'")
 
         pack = self.packs[pack_id]
-        print(f"[1. Pack Loaded]: {pack.name} ({pack.price} {pack.currency})")
-        print(f"    Rarity Table:")
-        for r, w in pack.rarities.items():
-            print(f"      • {r:<10}: {w:>5.1f}%")
-
-        # Roll Rarity
-        generator = rng if rng is not None else random
-        roll = generator.uniform(0.0, 100.0)
-        print(f"\n[2. Random Rarity Roll]: Generated value = {roll:.4f} / 100.0")
-
         selected_rarity = select_rarity(pack, rng=rng)
-        print(f"    Selected Rarity: ---> {selected_rarity.upper()} <---")
+        selected_creature = self.creature_pool.select_creature(selected_rarity, rng=rng)
 
-        # Query Driver Pool
-        pool = self.driver_pool.pools_by_rarity[selected_rarity]
-        print(f"\n[3. Driver Pool Lookup]: Found {len(pool)} eligible '{selected_rarity}' driver(s):")
-        for d in pool:
-            print(f"      • ID #{d.id}: {d.name} ({d.team})")
-
-        selected_driver = self.driver_pool.select_driver(selected_rarity, rng=rng)
-        print(f"\n[4. Selected Driver Template]: {selected_driver.name} (ID: #{selected_driver.id})")
-        print(f"    Stats: {selected_driver.stats}")
-
-        reward = RewardResult(
+        return RewardResult(
             reward_id=f"rew_{uuid.uuid4().hex[:12]}",
             pack_id=pack.id,
             pack_name=pack.name,
             rarity=selected_rarity,
-            driver=selected_driver
+            creature=selected_creature
         )
-
-        print(f"\n[5. Generated Reward Result]:")
-        print(f"    Reward ID:    {reward.reward_id}")
-        print(f"    Generated At: {reward.generated_at}")
-        print("=" * 65)
-        return reward

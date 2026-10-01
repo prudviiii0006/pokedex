@@ -1,11 +1,11 @@
-# AlgoRacers — Frontend
+# Pokédex — Frontend
 
-This directory will host the web application for AlgoRacers.
+Modern, interactive Web3 Pokédex application built with React, Vite, TypeScript, and Lucide icons.
 
-## Responsibilities
-- **Wallet Connection**: Connect to Pera Wallet (via `@perawallet/connect` / Pera Wallet SDK).
-- **Pack Purchasing & Opening**: Interactive pack opening animations and driver reveal.
-- **Garage / Inventory**: Display owned driver and car ASAs indexed from Algorand / backend.
-- **Race Dashboard**: Race track selection, live telemetry display, and race results.
-
-*Implementation begins in Session 4.*
+## Features
+- **Wallet Connection**: Connect to Algorand wallets via Pera Wallet.
+- **Pack Purchasing & Opening**: Interactive Pokéball release animations and Pokémon reveal.
+- **Pokédex & Collection**: Browse 247 authentic Pokémon across 8 generations, inspect detailed stats and elemental types.
+- **Battle Arena**: Dynamic turn-based battles and battle simulator with elemental advantages.
+- **Fusion Lab**: Combine duplicate creatures to unlock rare evolutions.
+- **P2P Trading Hub**: Propose, browse, and execute decentralized creature trades.

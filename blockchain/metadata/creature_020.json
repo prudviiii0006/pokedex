@@ -1,0 +1,59 @@
+{
+  "name": "Shadowstalker \u2014 AlgoCreatures Genesis (#020)",
+  "description": "Shadowstalker (Umbra) \u2014 Silent nocturnal phantom manipulating shadows to bypass enemy defensive lines.",
+  "image": "ipfs://bafybeicreaturesgenesis2026series1/creature_020.png",
+  "image_mimetype": "image/png",
+  "external_url": "https://algocreatures.io/species/shadowstalker",
+  "properties": {
+    "species_id": "shadowstalker",
+    "index_number": 20,
+    "species_name": "Shadowstalker",
+    "primary_type": "Dark",
+    "secondary_type": null,
+    "faction": "Umbra",
+    "rarity": "Epic",
+    "evolution_family": "umbrabbit_line",
+    "evolution_stage": 2,
+    "next_evolution_id": "nightreaver",
+    "generation": "Genesis Series 1",
+    "standard": "ARC-3"
+  },
+  "attributes": [
+    {
+      "trait_type": "Primary Type",
+      "value": "Dark"
+    },
+    {
+      "trait_type": "Faction",
+      "value": "Umbra"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Epic"
+    },
+    {
+      "trait_type": "Evolution Stage",
+      "value": "Stage 2"
+    },
+    {
+      "trait_type": "HP",
+      "value": 86
+    },
+    {
+      "trait_type": "Attack",
+      "value": 94
+    },
+    {
+      "trait_type": "Defense",
+      "value": 78
+    },
+    {
+      "trait_type": "Speed",
+      "value": 95
+    },
+    {
+      "trait_type": "Stamina",
+      "value": 84
+    }
+  ]
+}

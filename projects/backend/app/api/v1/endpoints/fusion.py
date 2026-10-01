@@ -1,65 +1,70 @@
 """
-AlgoRacers — Core Product Redesign: Fusion Endpoints
+Pokédex (AlgoCreatures) — Fusion Endpoints
 Module: api/v1/endpoints/fusion.py
-===================================================
-REST endpoints for initiating fusions, checking status, recovering rewards,
-and listing wallet fusion history.
+==========================================
+REST API endpoints for the 5-Epic-to-1-Legendary Pokémon Fusion feature.
 """
 
-from typing import List, Optional
-from fastapi import APIRouter, Path, Body, HTTPException, status, Depends
+import logging
+from typing import List, Dict, Any
+from fastapi import APIRouter, HTTPException, status, Path
+
 from backend.app.models.fusion import (
     FusionInitiateRequest,
-    FusionResponse
+    FusionConfirmRequest,
+    FusionResponse,
 )
 from backend.app.services.fusion_service import fusion_service
-from backend.app.core.security import get_optional_wallet
+
+logger = logging.getLogger("algocreatures.api.fusion")
 
 router = APIRouter()
 
-@router.post(
-    "/fusions",
-    response_model=FusionResponse,
-    summary="Fuse 5 Epic Cards into 1 Premium Driver",
-    description="Server-authoritatively verifies 5 distinct Epic cards owned by caller, consumes them, and mints 1 new 1-of-1 Premium driver NFT."
-)
-async def initiate_fusion(
-    body: FusionInitiateRequest = Body(...),
-    authenticated_wallet: Optional[str] = Depends(get_optional_wallet)
-):
-    if authenticated_wallet:
-        body.wallet_address = authenticated_wallet
-    return fusion_service.process_fusion(body)
+@router.get("/candidates/{wallet_address}", response_model=List[Dict[str, Any]])
+def get_fusion_candidates(wallet_address: str = Path(..., description="Connected Algorand wallet address")):
+    """
+    Returns all owned Epic Pokémon for the connected wallet that are available for Fusion.
+    Flags any assets that are locked in active trades.
+    """
+    return fusion_service.get_wallet_epic_candidates(wallet_address)
 
-@router.get(
-    "/fusions/{fusion_id}",
-    response_model=FusionResponse,
-    summary="Get Fusion Status",
-    description="Retrieves current state and minted Premium card details for a fusion operation."
-)
-async def get_fusion(
-    fusion_id: str = Path(..., examples=["fus_1a2b3c4d5e6f"])
+@router.post("/initiate", response_model=Dict[str, Any])
+def initiate_fusion(request: FusionInitiateRequest):
+    """
+    Validates exactly 5 Epic Pokémon owned by the wallet and initializes a Fusion session.
+    Returns session ID and minter address for the Pera group transfer approval.
+    """
+    return fusion_service.initiate_fusion(
+        wallet_address=request.wallet_address,
+        input_asset_ids=request.input_asset_ids
+    )
+
+@router.post("/{fusion_id}/confirm", response_model=Dict[str, Any])
+def confirm_fusion(
+    fusion_id: str = Path(..., description="Fusion session ID"),
+    request: FusionConfirmRequest = ...
 ):
+    """
+    Confirms the retirement transfer of the 5 Epic Pokémon, burns/removes them from the user's
+    collection, randomly chooses a Legendary Pokémon from the master catalog, mints a 1-of-1
+    ARC-3 NFT, and delivers it to the user's wallet.
+    """
+    return fusion_service.confirm_fusion(
+        fusion_id=fusion_id,
+        wallet_address=request.wallet_address,
+        transfer_tx_id=request.transfer_tx_id
+    )
+
+@router.get("/{fusion_id}", response_model=Dict[str, Any])
+def get_fusion_session(fusion_id: str = Path(..., description="Fusion session ID")):
+    """
+    Retrieves current state and reward data for a given Fusion session.
+    """
     return fusion_service.get_fusion(fusion_id)
 
-@router.post(
-    "/fusions/{fusion_id}/recover",
-    response_model=FusionResponse,
-    summary="Recover Pending Fusion Reward",
-    description="Retries Premium NFT minting/delivery for a fusion operation where input cards were consumed but output delivery was pending."
-)
-async def recover_fusion(
-    fusion_id: str = Path(..., examples=["fus_1a2b3c4d5e6f"])
-):
-    return fusion_service.recover_pending_fusion(fusion_id)
-
-@router.get(
-    "/wallets/{wallet_address}/fusions",
-    response_model=List[FusionResponse],
-    summary="Get User Fusion History",
-    description="Retrieves chronological history of all fusion operations executed by a wallet address."
-)
-async def get_wallet_fusions(
-    wallet_address: str = Path(..., examples=["3VZQZ4J4YRJBIJ6DAHGTS2QHZBLQUVKJYWRGHENSEIO5R73C5TFFL7N2PM"])
-):
-    return fusion_service.get_user_fusions(wallet_address)
+@router.get("/wallet/{wallet_address}", response_model=List[Dict[str, Any]])
+def get_wallet_fusions(wallet_address: str = Path(..., description="Connected Algorand wallet address")):
+    """
+    Returns all historical and active Fusion sessions for a wallet.
+    """
+    return fusion_service.get_wallet_fusions(wallet_address)

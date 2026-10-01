@@ -1,0 +1,59 @@
+{
+  "name": "Infernovar \u2014 AlgoCreatures Genesis (#003)",
+  "description": "Infernovar (Ignis) \u2014 Supreme apex fire sovereign whose volcanic aura melts all surrounding opposition.",
+  "image": "ipfs://bafybeicreaturesgenesis2026series1/creature_003.png",
+  "image_mimetype": "image/png",
+  "external_url": "https://algocreatures.io/species/infernovar",
+  "properties": {
+    "species_id": "infernovar",
+    "index_number": 3,
+    "species_name": "Infernovar",
+    "primary_type": "Fire",
+    "secondary_type": null,
+    "faction": "Ignis",
+    "rarity": "Legendary",
+    "evolution_family": "emberling_line",
+    "evolution_stage": 3,
+    "next_evolution_id": null,
+    "generation": "Genesis Series 1",
+    "standard": "ARC-3"
+  },
+  "attributes": [
+    {
+      "trait_type": "Primary Type",
+      "value": "Fire"
+    },
+    {
+      "trait_type": "Faction",
+      "value": "Ignis"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Legendary"
+    },
+    {
+      "trait_type": "Evolution Stage",
+      "value": "Stage 3"
+    },
+    {
+      "trait_type": "HP",
+      "value": 98
+    },
+    {
+      "trait_type": "Attack",
+      "value": 99
+    },
+    {
+      "trait_type": "Defense",
+      "value": 86
+    },
+    {
+      "trait_type": "Speed",
+      "value": 97
+    },
+    {
+      "trait_type": "Stamina",
+      "value": 95
+    }
+  ]
+}

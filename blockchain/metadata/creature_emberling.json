@@ -1,0 +1,59 @@
+{
+  "name": "Emberling \u2014 AlgoCreatures Genesis (#001)",
+  "description": "Emberling (Ignis) \u2014 A spirited young fire spirit brimming with inner embers, capable of producing searing flare bursts.",
+  "image": "ipfs://bafybeicreaturesgenesis2026series1/creature_001.png",
+  "image_mimetype": "image/png",
+  "external_url": "https://algocreatures.io/species/emberling",
+  "properties": {
+    "species_id": "emberling",
+    "index_number": 1,
+    "species_name": "Emberling",
+    "primary_type": "Fire",
+    "secondary_type": null,
+    "faction": "Ignis",
+    "rarity": "Common",
+    "evolution_family": "emberling_line",
+    "evolution_stage": 1,
+    "next_evolution_id": "pyreclaw",
+    "generation": "Genesis Series 1",
+    "standard": "ARC-3"
+  },
+  "attributes": [
+    {
+      "trait_type": "Primary Type",
+      "value": "Fire"
+    },
+    {
+      "trait_type": "Faction",
+      "value": "Ignis"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Common"
+    },
+    {
+      "trait_type": "Evolution Stage",
+      "value": "Stage 1"
+    },
+    {
+      "trait_type": "HP",
+      "value": 72
+    },
+    {
+      "trait_type": "Attack",
+      "value": 75
+    },
+    {
+      "trait_type": "Defense",
+      "value": 68
+    },
+    {
+      "trait_type": "Speed",
+      "value": 80
+    },
+    {
+      "trait_type": "Stamina",
+      "value": 70
+    }
+  ]
+}

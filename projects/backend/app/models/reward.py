@@ -1,8 +1,8 @@
 """
-AlgoRacers — Session 6: FastAPI Backend
+Pokédex — FastAPI Backend
 Module: models/reward.py
 =======================================
-Pydantic schemas for driver rewards and pack simulations.
+Pydantic schemas for Pokémon rewards and pack simulations.
 """
 
 from typing import Dict, Optional

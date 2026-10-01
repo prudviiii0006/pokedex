@@ -1,4 +1,4 @@
-# AlgoRacers — IPFS, Content Addressing & Metadata Integrity Specification
+# Pokédex — IPFS, Content Addressing & Metadata Integrity Specification
 
 ---
 
@@ -7,7 +7,7 @@
 ```text
 ┌───────────────────────────────────────────────┐
 │              LOCATION ADDRESSING              │
-│ https://example.com/driver1.json              │
+│ https://example.com/pokemon1.json             │
 │ • "Fetch whatever file currently lives here"  │
 │ • Vulnerability: Host can alter stats or image│
 │   without changing the URL!                   │
@@ -26,7 +26,7 @@
 
 ## 2. Cryptographic Content Identifiers (CIDv1)
 
-AlgoRacers uses **CIDv1 Base32** (`bafk...`):
+Pokédex uses **CIDv1 Base32** (`bafk...`):
 
 $$\text{Digest} = \text{SHA256}(\text{Canonical Bytes})$$
 $$\text{Multihash} = \text{0x12 (SHA-256)} \;\|\; \text{0x20 (32 bytes)} \;\|\; \text{Digest}$$

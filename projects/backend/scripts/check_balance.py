@@ -1,5 +1,5 @@
 """
-AlgoRacers — Session 1: Algorand Fundamentals
+Pokédex — Algorand Fundamentals
 Script: check_balance.py
 =============================================
 Queries the live on-chain account state from Algod.
@@ -29,7 +29,7 @@ def get_algod_client() -> algod.AlgodClient:
 
 def main():
     print("=" * 65)
-    print("🏎️  ALGORACERS — CHECK TESTNET ACCOUNT BALANCE")
+    print("⚡  POKÉDEX — CHECK TESTNET ACCOUNT BALANCE")
     print("=" * 65)
 
     # 1. Determine address to check (CLI argument or .env default)

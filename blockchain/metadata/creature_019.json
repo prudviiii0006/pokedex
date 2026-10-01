@@ -1,0 +1,59 @@
+{
+  "name": "Umbrabbit \u2014 AlgoCreatures Genesis (#019)",
+  "description": "Umbrabbit (Umbra) \u2014 Shadow leaper lurking within twilight darkness to strike unexpected critical blows.",
+  "image": "ipfs://bafybeicreaturesgenesis2026series1/creature_019.png",
+  "image_mimetype": "image/png",
+  "external_url": "https://algocreatures.io/species/umbrabbit",
+  "properties": {
+    "species_id": "umbrabbit",
+    "index_number": 19,
+    "species_name": "Umbrabbit",
+    "primary_type": "Dark",
+    "secondary_type": null,
+    "faction": "Umbra",
+    "rarity": "Common",
+    "evolution_family": "umbrabbit_line",
+    "evolution_stage": 1,
+    "next_evolution_id": "shadowstalker",
+    "generation": "Genesis Series 1",
+    "standard": "ARC-3"
+  },
+  "attributes": [
+    {
+      "trait_type": "Primary Type",
+      "value": "Dark"
+    },
+    {
+      "trait_type": "Faction",
+      "value": "Umbra"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Common"
+    },
+    {
+      "trait_type": "Evolution Stage",
+      "value": "Stage 1"
+    },
+    {
+      "trait_type": "HP",
+      "value": 70
+    },
+    {
+      "trait_type": "Attack",
+      "value": 80
+    },
+    {
+      "trait_type": "Defense",
+      "value": 66
+    },
+    {
+      "trait_type": "Speed",
+      "value": 88
+    },
+    {
+      "trait_type": "Stamina",
+      "value": 74
+    }
+  ]
+}

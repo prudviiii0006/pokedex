@@ -1,5 +1,5 @@
 """
-AlgoRacers — Session 2: Algorand Standard Assets (ASAs)
+Pokédex — Algorand Standard Assets (ASAs)
 Script: asset_opt_in.py
 =======================================================
 Demonstrates the Algorand Asset Opt-in mechanism:
@@ -27,7 +27,7 @@ def get_algod_client() -> algod.AlgodClient:
 
 def main():
     print("=" * 65)
-    print("🏎️  ALGORACERS — ASSET OPT-IN (ZERO-AMOUNT SELF TRANSFER)")
+    print("⚡  POKÉDEX — ASSET OPT-IN (ZERO-AMOUNT SELF TRANSFER)")
     print("=" * 65)
 
     if len(sys.argv) < 2:

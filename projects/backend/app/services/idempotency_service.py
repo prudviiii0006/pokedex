@@ -1,5 +1,5 @@
 """
-AlgoRacers — Session 22: Idempotency & Concurrency Service
+Pokédex — Idempotency & Concurrency Service
 Module: services/idempotency_service.py
 ==========================================================
 Protects state mutations from concurrent duplicate requests and enforces
@@ -14,7 +14,7 @@ from typing import Dict, Any, Optional, Tuple
 
 from backend.app.core.database import get_db
 
-logger = logging.getLogger("algoracers.services.idempotency")
+logger = logging.getLogger("pokedex.services.idempotency")
 
 class IdempotencyService:
     def check_or_reserve(

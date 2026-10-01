@@ -1,8 +1,8 @@
-# AlgoRacers — Security Specification & Threat Model
+# Pokédex — Security Specification & Threat Model
 
 > [!WARNING]
 > **Learning & TestNet Project Notice**:
-> AlgoRacers is built as an educational demonstration of Algorand Layer-1 ASAs, the x402 payment protocol, and assistive AI agents. It operates exclusively on Algorand TestNet and has not undergone a formal third-party security audit.
+> Pokédex is built as an educational demonstration of Algorand Layer-1 ASAs, the x402 payment protocol, and assistive AI agents. It operates exclusively on Algorand TestNet and has not undergone a formal third-party security audit.
 
 ---
 

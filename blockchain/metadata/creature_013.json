@@ -1,0 +1,59 @@
+{
+  "name": "Gravelit \u2014 AlgoCreatures Genesis (#013)",
+  "description": "Gravelit (Geo) \u2014 Solid rock construct with dense mineral density, absorbing shockwaves effortlessly.",
+  "image": "ipfs://bafybeicreaturesgenesis2026series1/creature_013.png",
+  "image_mimetype": "image/png",
+  "external_url": "https://algocreatures.io/species/gravelit",
+  "properties": {
+    "species_id": "gravelit",
+    "index_number": 13,
+    "species_name": "Gravelit",
+    "primary_type": "Earth",
+    "secondary_type": null,
+    "faction": "Geo",
+    "rarity": "Common",
+    "evolution_family": "gravelit_line",
+    "evolution_stage": 1,
+    "next_evolution_id": "terrashell",
+    "generation": "Genesis Series 1",
+    "standard": "ARC-3"
+  },
+  "attributes": [
+    {
+      "trait_type": "Primary Type",
+      "value": "Earth"
+    },
+    {
+      "trait_type": "Faction",
+      "value": "Geo"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Common"
+    },
+    {
+      "trait_type": "Evolution Stage",
+      "value": "Stage 1"
+    },
+    {
+      "trait_type": "HP",
+      "value": 80
+    },
+    {
+      "trait_type": "Attack",
+      "value": 72
+    },
+    {
+      "trait_type": "Defense",
+      "value": 84
+    },
+    {
+      "trait_type": "Speed",
+      "value": 60
+    },
+    {
+      "trait_type": "Stamina",
+      "value": 85
+    }
+  ]
+}

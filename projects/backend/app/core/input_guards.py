@@ -1,5 +1,5 @@
 """
-AlgoRacers — Session 23: Input Hardening & Defense Guards
+Pokédex — Input Hardening & Defense Guards
 Module: core/input_guards.py
 ========================================================
 Sanitizes and validates incoming untrusted inputs to prevent:
@@ -15,12 +15,12 @@ from typing import Optional
 from fastapi import HTTPException, status
 from algosdk import encoding
 
-logger = logging.getLogger("algoracers.security.guards")
+logger = logging.getLogger("pokedex.security.guards")
 
 # Regex for strict IPFS CIDv0/CIDv1 format
 CID_REGEX = re.compile(r"^(Qm[1-9A-HJ-NP-za-km-z]{44}|bafy[a-z0-9]{55})$")
 
-# Regex for safe alphanumeric identifiers (circuits, drivers, pack_ids)
+# Regex for safe alphanumeric identifiers (creatures, species, pack_ids)
 SAFE_IDENTIFIER_REGEX = re.compile(r"^[a-zA-Z0-9_\-\.]{1,64}$")
 
 def validate_algorand_address(address: str) -> str:

@@ -1,5 +1,5 @@
 """
-AlgoRacers — Session 6: FastAPI Backend
+Pokédex — FastAPI Backend
 Module: services/pack_service.py
 =======================================
 Service layer keeping API routes thin.

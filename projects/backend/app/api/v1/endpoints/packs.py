@@ -1,5 +1,5 @@
 """
-AlgoRacers — Session 6: FastAPI Backend
+Pokédex — FastAPI Backend
 Module: api/v1/endpoints/packs.py
 =================================
 REST endpoints for inspecting pack configurations and simulating rewards.

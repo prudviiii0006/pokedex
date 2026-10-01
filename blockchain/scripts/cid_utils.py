@@ -1,5 +1,5 @@
 """
-AlgoRacers — Session 17: Content Addressing & CID Utilities
+Pokédex — Content Addressing & CID Utilities
 Module: blockchain/scripts/cid_utils.py
 ===========================================================
 Pure Python deterministic multihash and CIDv1 (base32) computation.

@@ -1,11 +1,8 @@
-# AlgoRacers — Blockchain
+# Pokédex — Blockchain & ARC-3 Metadata
 
-This directory will host all Algorand-native scripts, smart contracts, asset configuration, and deployment scripts.
+This directory hosts Algorand-native scripts, ARC-3 digital collectible metadata, and IPFS verification utilities.
 
 ## Responsibilities
-- **Algorand Python / PyTeal / Tealish / Beaker**: Smart contracts for escrow, race verification, or pack drops.
-- **Asset Creation (ASA)**: Minting scripts for Driver ASAs with decimals=0, total=1, and ARC metadata URLs.
-- **Opt-in & Transfer Scripts**: Managing atomic transactions and asset transfers.
-- **Network Profiles**: Configuration for LocalNet, TestNet, and MainNet nodes.
-
-*Implementation begins in Session 1.*
+- **ARC-3 Metadata**: Deterministic CID generation and validation for Pokémon digital collectibles.
+- **Asset Creation (ASA)**: Minting 1-of-1 digital collectibles with decimals=0, total=1, and ARC-3 metadata URIs.
+- **Opt-in & Transfer Utilities**: Client-assisted atomic asset delivery and opt-in transactions.

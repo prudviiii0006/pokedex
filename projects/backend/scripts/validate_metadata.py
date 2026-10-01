@@ -1,5 +1,5 @@
 """
-AlgoRacers — Session 3: NFT Metadata Validator
+Pokédex — NFT Metadata Validator
 Script: validate_metadata.py
 =============================================
 Validates all ARC-3 metadata JSON files in `blockchain/metadata/`.
@@ -86,7 +86,7 @@ def validate_file(file_path: Path, seen_ids: set, seen_names: set) -> list:
 
 def main():
     print("=" * 65)
-    print("🏎️  ALGORACERS — ARC-3 METADATA VALIDATOR")
+    print("⚡  POKÉDEX — ARC-3 METADATA VALIDATOR")
     print("=" * 65)
 
     cand_root = Path(__file__).resolve().parent.parent.parent.parent

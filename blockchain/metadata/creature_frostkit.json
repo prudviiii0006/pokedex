@@ -1,0 +1,59 @@
+{
+  "name": "Frostkit \u2014 AlgoCreatures Genesis (#016)",
+  "description": "Frostkit (Glacier) \u2014 Sub-zero arctic feline whose frost breath freezes enemy offensive momentum.",
+  "image": "ipfs://bafybeicreaturesgenesis2026series1/creature_016.png",
+  "image_mimetype": "image/png",
+  "external_url": "https://algocreatures.io/species/frostkit",
+  "properties": {
+    "species_id": "frostkit",
+    "index_number": 16,
+    "species_name": "Frostkit",
+    "primary_type": "Ice",
+    "secondary_type": null,
+    "faction": "Glacier",
+    "rarity": "Common",
+    "evolution_family": "frostkit_line",
+    "evolution_stage": 1,
+    "next_evolution_id": "glacioron",
+    "generation": "Genesis Series 1",
+    "standard": "ARC-3"
+  },
+  "attributes": [
+    {
+      "trait_type": "Primary Type",
+      "value": "Ice"
+    },
+    {
+      "trait_type": "Faction",
+      "value": "Glacier"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Common"
+    },
+    {
+      "trait_type": "Evolution Stage",
+      "value": "Stage 1"
+    },
+    {
+      "trait_type": "HP",
+      "value": 70
+    },
+    {
+      "trait_type": "Attack",
+      "value": 74
+    },
+    {
+      "trait_type": "Defense",
+      "value": 76
+    },
+    {
+      "trait_type": "Speed",
+      "value": 78
+    },
+    {
+      "trait_type": "Stamina",
+      "value": 74
+    }
+  ]
+}

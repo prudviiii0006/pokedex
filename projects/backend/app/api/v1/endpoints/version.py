@@ -1,5 +1,5 @@
 """
-AlgoRacers — Session 24: Version & Public Configuration Endpoints
+Pokédex — Version & Public Configuration Endpoints
 Module: api/v1/endpoints/version.py
 ================================================================
 Exposes sanitized build provenance, version metadata, and public deployment configuration.
@@ -15,8 +15,8 @@ from backend.app.core.config import settings
 router = APIRouter()
 
 class VersionResponse(BaseModel):
-    project_name: str = Field(..., examples=["AlgoRacers API"])
-    version: str = Field("0.24.0", examples=["0.24.0"])
+    project_name: str = Field(..., examples=["Pokédex API"])
+    version: str = Field("1.0.0", examples=["1.0.0"])
     git_commit: str = Field("c89f1a2e", examples=["c89f1a2e"])
     build_timestamp: str = Field("2026-08-30T18:00:00Z", examples=["2026-08-30T18:00:00Z"])
     environment: str = Field("staging", examples=["staging"])

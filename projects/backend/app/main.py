@@ -1,5 +1,5 @@
 """
-AlgoRacers — Session 12: Production Hardening, Logging & Observability
+Pokédex — Production Hardening, Logging & Observability
 Module: main.py
 =====================================================================
 FastAPI application entrypoint with:
@@ -11,6 +11,7 @@ FastAPI application entrypoint with:
 """
 
 import sys
+import os
 from pathlib import Path
 
 _ws_root = Path(__file__).resolve().parent.parent.parent.parent
@@ -32,36 +33,34 @@ from backend.app.core.config import settings
 from backend.app.core.database import init_db
 from backend.app.api.v1.api import api_router
 from backend.app.api.v1.endpoints import (
-    health, auth, packs, premium,
-    purchases, circuits, races, agent,
-    tournaments, profile, achievements, collections, seasons, governance,
-    chain_status, activity, jobs, simulation, version,
-    fusion, trading
+    health, packs, purchases, version,
+    creatures, collection, battles, evolution, trades, activity, pricing, assets, fusion
 )
 
 # Setup structured logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] [%(name)s]: %(message)s")
-logger = logging.getLogger("algoracers.api")
+logger = logging.getLogger("pokedex.api")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # 1. Startup TestNet Fail-Safe Guardrail
     if settings.NETWORK.lower() not in ["testnet", "algorand-testnet"]:
-        logger.critical(f"🛑 FATAL SECURITY VIOLATION: AlgoRacers is in Safe Learning Mode. Disallowed network '{settings.NETWORK}'. Refusing startup.")
-        raise RuntimeError(f"Startup aborted: Only Algorand TestNet is permitted in AlgoRacers.")
+        logger.critical(f"🛑 FATAL SECURITY VIOLATION: Pokédex is in Safe Learning Mode. Disallowed network '{settings.NETWORK}'. Refusing startup.")
+        raise RuntimeError(f"Startup aborted: Only Algorand TestNet is permitted in Pokédex.")
 
     # 2. Database Initialization
     init_db()
 
-    logger.info(f"🏎️  AlgoRacers API started successfully! [Network: {settings.NETWORK}]")
-    logger.info(f"📚 OpenAPI Documentation available at: http://localhost:8000/docs")
+    port = int(os.getenv("PORT", "8001"))
+    logger.info(f"✨ Pokédex Core API started successfully! [Network: {settings.NETWORK}]")
+    logger.info(f"📚 OpenAPI Documentation available at: http://localhost:{port}/docs")
     yield
-    logger.info("🛑 AlgoRacers API shutting down cleanly.")
+    logger.info("🛑 Pokédex API shutting down cleanly.")
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.VERSION,
-    description="REST backend service for AlgoRacers: driver collectibles, race engine, and AI agent.",
+    description="REST backend service for Pokédex: Pokémon digital collectibles, x402 payments, and ARC-3 NFT minting.",
     docs_url="/docs",
     redoc_url="/redoc",
     openapi_url="/openapi.json",
@@ -133,37 +132,31 @@ async def global_exception_handler(request: Request, exc: Exception):
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content={
             "error": "InternalServerError",
-            "message": "An unexpected server error occurred. Please contact the AlgoRacers team.",
+            "message": "An unexpected server error occurred. Please contact the Pokédex team.",
             "request_id": req_id
         }
     )
 
-# 4. Mount Direct Root-Level Endpoints
+# 4. Mount Core MVP Direct Root-Level Endpoints
 app.include_router(health.router, tags=["Health & Readiness"])
 app.include_router(version.router, tags=["Version & Build Provenance"])
-app.include_router(auth.router, prefix="/auth", tags=["Wallet Authentication"])
+app.include_router(pricing.router, tags=["Authoritative Pricing & Config"])
 app.include_router(packs.router, prefix="/packs", tags=["Packs & Rewards"])
-app.include_router(premium.router, tags=["Circuit Telemetry"])
 app.include_router(purchases.router, tags=["Purchases & NFT Delivery"])
-app.include_router(circuits.router, tags=["Circuits"])
-app.include_router(races.router, tags=["Racing & Leaderboard"])
-app.include_router(fusion.router, tags=["Card Fusion Lab"])
-app.include_router(trading.router, tags=["Trading Marketplace"])
-app.include_router(agent.router, tags=["AI Racing Agent"])
-app.include_router(tournaments.router, prefix="/tournaments", tags=["On-Chain Tournaments"])
-app.include_router(profile.router, tags=["Player Profile & Progression"])
-app.include_router(achievements.router, prefix="/achievements", tags=["Achievements"])
-app.include_router(collections.router, tags=["Collection Book, Drivers & Card Provenance"])
-app.include_router(seasons.router, prefix="/seasons", tags=["Championship Seasons & Merkle Claims"])
-app.include_router(governance.router, prefix="/governance", tags=["Multisig Governance & Privileged Controls"])
-app.include_router(chain_status.router, prefix="/chain", tags=["Chain Synchronization & Health"])
-app.include_router(activity.router, prefix="/activity", tags=["On-Chain Activity Feed"])
-app.include_router(jobs.router, prefix="/jobs", tags=["Durable Background Jobs"])
-app.include_router(simulation.router, prefix="/races", tags=["Batch Race Simulation"])
+app.include_router(creatures.router, tags=["Creatures & Species Index"])
+app.include_router(assets.router, tags=["On-Chain ASA NFT Verification"])
+app.include_router(collection.router, tags=["Collection & Deck Management"])
+app.include_router(battles.router, tags=["Arena Battles & Combat Engine"])
+app.include_router(evolution.router, tags=["Creature Evolution Chamber"])
+app.include_router(fusion.router, prefix="/fusion", tags=["Pokémon Fusion Chamber"])
+app.include_router(trades.router, tags=["Peer-to-Peer Card Trading"])
+app.include_router(activity.router, tags=["Activity & Live Feed"])
 
 # 5. Versioned API Router (/api/v1)
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("backend.app.main:app", host="0.0.0.0", port=8000, reload=False)
+    import os
+    port = int(os.getenv("PORT", "8001"))
+    uvicorn.run("backend.app.main:app", host="0.0.0.0", port=port, reload=False)

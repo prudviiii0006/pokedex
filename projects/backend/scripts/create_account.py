@@ -1,5 +1,5 @@
 """
-AlgoRacers — Session 1: Algorand Fundamentals
+Pokédex — Algorand Fundamentals
 Script: create_account.py
 =============================================
 Generates a fresh Algorand TestNet development account.
@@ -17,7 +17,7 @@ from algosdk import account, mnemonic
 
 def main():
     print("=" * 65)
-    print("🏎️  ALGORACERS — GENERATE TESTNET DEVELOPMENT ACCOUNT")
+    print("⚡  POKÉDEX — GENERATE TESTNET DEVELOPMENT ACCOUNT")
     print("=" * 65)
 
     # 1. Generate an Ed25519 private key & derived public address

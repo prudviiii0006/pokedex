@@ -1,9 +1,9 @@
 """
-AlgoRacers — Session 3: NFT Metadata & ARC-3 Minting
+Pokédex — NFT Metadata & ARC-3 Minting
 Script: mint_arc3_nft.py
 ====================================================
-Mints an ARC-3 compliant Driver NFT on Algorand TestNet:
-  1. Reads `blockchain/metadata/driver_001.json`
+Mints an ARC-3 compliant Pokémon Collectible NFT on Algorand TestNet:
+  1. Reads `blockchain/metadata/creature_001.json`
   2. Computes the 32-byte SHA-256 `metadata_hash` of the JSON file
   3. Constructs `AssetConfigTxn` with:
      • URL: `ipfs://<CID>#arc3` (The `#arc3` fragment declares standard compliance)
@@ -39,10 +39,10 @@ def compute_json_sha256(file_path: Path) -> bytes:
 
 def main():
     print("=" * 65)
-    print("🏎️  ALGORACERS — MINT ARC-3 COMPLIANT DRIVER NFT")
+    print("✨ POKÉDEX — MINT ARC-3 COMPLIANT DIGITAL COLLECTIBLE NFT")
     print("=" * 65)
 
-    metadata_path = Path(__file__).resolve().parent.parent.parent / "blockchain" / "metadata" / "driver_001.json"
+    metadata_path = Path(__file__).resolve().parent.parent.parent / "blockchain" / "metadata" / "creature_001.json"
     if not metadata_path.exists():
         print(f"❌ Error: Metadata file not found at {metadata_path}")
         return
@@ -83,14 +83,14 @@ def main():
     sp = client.suggested_params()
 
     # In ARC-3, the URL must end with `#arc3` or be an IPFS CID
-    ipfs_cid = "bafybeic527p2j4f2e5z7e7t6c5b2r4n3k6l5o4p3q2r1s0t"
-    arc3_url = f"ipfs://{ipfs_cid}/driver_001.json#arc3"
+    ipfs_cid = "bafybeicreaturesgenesis2026series1"
+    arc3_url = f"ipfs://{ipfs_cid}/creature_001.json#arc3"
 
-    driver_name = meta.get("name", "AlgoRacer #001")
-    unit_name = "AR001"
+    nft_name = meta.get("name", "Pokédex #001")
+    unit_name = "PKDX001"
 
     print("\n[Step 2: Constructing ARC-3 AssetConfigTxn]")
-    print(f"   • Asset Name:        {driver_name}")
+    print(f"   • Asset Name:        {nft_name}")
     print(f"   • Unit Name:         {unit_name}")
     print(f"   • Total Supply:      1 (1-of-1 NFT)")
     print(f"   • Decimals:          0 (Indivisible)")
@@ -104,7 +104,7 @@ def main():
         decimals=0,
         default_frozen=False,
         unit_name=unit_name,
-        asset_name=driver_name,
+        asset_name=nft_name,
         manager=creator_addr,
         reserve=creator_addr,
         freeze=None,

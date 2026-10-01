@@ -1,5 +1,5 @@
 """
-AlgoRacers — Session 2: Algorand Standard Assets (ASAs)
+Pokédex — Algorand Standard Assets (ASAs)
 Script: transfer_asset.py
 =======================================================
 Transfers units of an ASA from creator/sender to an opted-in receiver account.
@@ -29,7 +29,7 @@ def get_algod_client() -> algod.AlgodClient:
 
 def main():
     print("=" * 65)
-    print("🏎️  ALGORACERS — TRANSFER FUNGIBLE ASA (CREDITS)")
+    print("⚡  POKÉDEX — TRANSFER FUNGIBLE ASA (CREDITS)")
     print("=" * 65)
 
     if len(sys.argv) < 2:
@@ -94,7 +94,7 @@ def main():
         receiver=receiver_addr,
         amt=amount_to_send,
         index=asset_id,
-        note=b"AlgoRacers: Session 2 Asset Transfer"
+        note=b"Pokédex: Asset Transfer"
     )
 
     # 5. Sign Transaction Locally

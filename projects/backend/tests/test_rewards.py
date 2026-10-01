@@ -1,17 +1,16 @@
 """
-AlgoRacers — Session 5: Pack & Reward System Test Suite
-======================================================
+AlgoCreatures — Pack & Creature Reward System Test Suite
+========================================================
 Tests:
   1. Basic pack probabilities sum to 100
   2. Premium pack probabilities sum to 100
   3. Unknown pack type raises KeyError
   4. Invalid/negative rarity raises ValueError
-  5. Missing driver pool raises ValueError
-  6. Reward result contains valid driver template
-  7. Reward rarity matches driver's configured rarity
-  8. Generated reward IDs are unique
-  9. Injected deterministic RNG produces reproducible results
-  10. Monte Carlo distribution matches configuration within statistical tolerance
+  5. Reward result contains valid creature template
+  6. Reward rarity matches creature's configured rarity
+  7. Generated reward IDs are unique
+  8. Injected deterministic RNG produces reproducible results
+  9. Monte Carlo distribution matches configuration within statistical tolerance
 """
 
 import os
@@ -60,35 +59,30 @@ def test_invalid_rarity_rejected():
     with pytest.raises(ValueError, match="cannot be negative"):
         validate_rarity_weights(negative_weights)
 
-def test_empty_driver_pool_rejected(tmp_path):
-    """Test 5: Empty driver directory raises error during initialization."""
-    empty_dir = tmp_path / "empty_metadata"
-    empty_dir.mkdir()
-    with pytest.raises(ValueError, match="No driver metadata files found"):
-        RewardEngine(metadata_dir=empty_dir)
-
-def test_reward_contains_valid_driver(engine):
-    """Test 6: Reward contains complete driver template."""
+def test_reward_contains_valid_creature(engine):
+    """Test 5: Reward contains complete creature template."""
     reward = engine.open_pack("basic")
-    assert reward.driver is not None
-    assert reward.driver.id != ""
-    assert reward.driver.name != ""
-    assert "Speed" in reward.driver.stats
-    assert "Racecraft" in reward.driver.stats
+    assert reward.creature is not None
+    assert reward.creature.id != ""
+    assert reward.creature.name != ""
+    assert "HP" in reward.creature.stats
+    assert "Attack" in reward.creature.stats
+    assert "Defense" in reward.creature.stats
+    assert "Speed" in reward.creature.stats
 
-def test_reward_rarity_matches_driver(engine):
-    """Test 7: Rolled rarity strictly matches the driver's intrinsic rarity."""
+def test_reward_rarity_matches_creature(engine):
+    """Test 6: Rolled rarity strictly matches the creature's intrinsic rarity."""
     for _ in range(50):
         reward = engine.open_pack("premium")
-        assert reward.rarity == reward.driver.rarity
+        assert reward.rarity == reward.creature.rarity
 
 def test_reward_id_unique(engine):
-    """Test 8: Successive openings emit unique reward IDs."""
+    """Test 7: Successive openings emit unique reward IDs."""
     ids = {engine.open_pack("basic").reward_id for _ in range(100)}
     assert len(ids) == 100
 
 def test_deterministic_test_rng(engine):
-    """Test 9: Seeded RNG produces identical deterministic outcomes."""
+    """Test 8: Seeded RNG produces identical deterministic outcomes."""
     rng1 = random.Random(42)
     reward1 = engine.open_pack("premium", rng=rng1)
 
@@ -96,11 +90,11 @@ def test_deterministic_test_rng(engine):
     reward2 = engine.open_pack("premium", rng=rng2)
 
     assert reward1.rarity == reward2.rarity
-    assert reward1.driver.id == reward2.driver.id
-    assert reward1.driver.name == reward2.driver.name
+    assert reward1.creature.id == reward2.creature.id
+    assert reward1.creature.name == reward2.creature.name
 
 def test_statistical_tolerance(engine):
-    """Test 10: 10,000 Basic openings converge within statistical tolerance (+-2%)."""
+    """Test 9: 10,000 Basic openings converge within statistical tolerance (+-2%)."""
     count = 10000
     counts = {"Common": 0, "Rare": 0, "Epic": 0, "Legendary": 0}
     

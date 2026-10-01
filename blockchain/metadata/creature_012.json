@@ -1,0 +1,59 @@
+{
+  "name": "Thundermane \u2014 AlgoCreatures Genesis (#012)",
+  "description": "Thundermane (Volt) \u2014 Storm predator roaring with thunderclaps that paralyze opposing creatures instantaneously.",
+  "image": "ipfs://bafybeicreaturesgenesis2026series1/creature_012.png",
+  "image_mimetype": "image/png",
+  "external_url": "https://algocreatures.io/species/thundermane",
+  "properties": {
+    "species_id": "thundermane",
+    "index_number": 12,
+    "species_name": "Thundermane",
+    "primary_type": "Electric",
+    "secondary_type": null,
+    "faction": "Volt",
+    "rarity": "Epic",
+    "evolution_family": "sparkpup_line",
+    "evolution_stage": 3,
+    "next_evolution_id": null,
+    "generation": "Genesis Series 1",
+    "standard": "ARC-3"
+  },
+  "attributes": [
+    {
+      "trait_type": "Primary Type",
+      "value": "Electric"
+    },
+    {
+      "trait_type": "Faction",
+      "value": "Volt"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Epic"
+    },
+    {
+      "trait_type": "Evolution Stage",
+      "value": "Stage 3"
+    },
+    {
+      "trait_type": "HP",
+      "value": 90
+    },
+    {
+      "trait_type": "Attack",
+      "value": 97
+    },
+    {
+      "trait_type": "Defense",
+      "value": 80
+    },
+    {
+      "trait_type": "Speed",
+      "value": 99
+    },
+    {
+      "trait_type": "Stamina",
+      "value": 91
+    }
+  ]
+}

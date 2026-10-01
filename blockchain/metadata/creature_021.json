@@ -1,0 +1,59 @@
+{
+  "name": "Nightreaver \u2014 AlgoCreatures Genesis (#021)",
+  "description": "Nightreaver (Umbra) \u2014 Mythical void overlord consuming all light and devastating foes with spectral dread.",
+  "image": "ipfs://bafybeicreaturesgenesis2026series1/creature_021.png",
+  "image_mimetype": "image/png",
+  "external_url": "https://algocreatures.io/species/nightreaver",
+  "properties": {
+    "species_id": "nightreaver",
+    "index_number": 21,
+    "species_name": "Nightreaver",
+    "primary_type": "Dark",
+    "secondary_type": null,
+    "faction": "Umbra",
+    "rarity": "Legendary",
+    "evolution_family": "umbrabbit_line",
+    "evolution_stage": 3,
+    "next_evolution_id": null,
+    "generation": "Genesis Series 1",
+    "standard": "ARC-3"
+  },
+  "attributes": [
+    {
+      "trait_type": "Primary Type",
+      "value": "Dark"
+    },
+    {
+      "trait_type": "Faction",
+      "value": "Umbra"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Legendary"
+    },
+    {
+      "trait_type": "Evolution Stage",
+      "value": "Stage 3"
+    },
+    {
+      "trait_type": "HP",
+      "value": 95
+    },
+    {
+      "trait_type": "Attack",
+      "value": 99
+    },
+    {
+      "trait_type": "Defense",
+      "value": 84
+    },
+    {
+      "trait_type": "Speed",
+      "value": 98
+    },
+    {
+      "trait_type": "Stamina",
+      "value": 93
+    }
+  ]
+}

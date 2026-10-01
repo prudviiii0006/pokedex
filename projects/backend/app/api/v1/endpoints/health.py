@@ -1,7 +1,6 @@
 """
-AlgoRacers — Session 12: Health & Readiness Endpoints
-Module: api/v1/endpoints/health.py
-===================================================
+Pokédex — Health & Readiness Endpoints (MVP)
+==============================================
 Liveness (/health) and Readiness (/ready) probes.
 """
 
@@ -9,10 +8,10 @@ from fastapi import APIRouter, HTTPException, status
 from backend.app.core.config import settings
 from backend.app.core.database import get_db
 from backend.app.models.health import HealthResponse
-from backend.app.services.circuit_service import circuit_service
-from backend.app.services.race_engine import race_engine
+from backend.rewards.creature_pool import CreaturePool
 
 router = APIRouter()
+_creature_pool = CreaturePool()
 
 @router.get(
     "/health", 
@@ -23,7 +22,7 @@ router = APIRouter()
 async def get_health():
     return HealthResponse(
         status="ok",
-        service="algoracers-api",
+        service="pokedex-api",
         version=settings.VERSION,
         network=settings.NETWORK
     )
@@ -51,14 +50,13 @@ async def get_readiness():
             detail=f"Database connectivity check failed: {str(e)}"
         )
 
-    # 3. Check Driver Pool and Circuits
+    # 3. Check Canonical Creature Pool
     try:
-        drivers_count = len(race_engine.reward_engine.driver_pool.get_all_drivers())
-        circuits_count = len(circuit_service.list_circuits())
+        creatures_count = len(_creature_pool.get_all_creatures())
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail=f"Internal asset loading failed: {str(e)}"
+            detail=f"Internal creature pool loading failed: {str(e)}"
         )
 
     return {
@@ -66,6 +64,6 @@ async def get_readiness():
         "database": "connected",
         "network": settings.NETWORK,
         "testnet_guard": "active",
-        "drivers_loaded": drivers_count,
-        "circuits_loaded": circuits_count
+        "creatures_loaded": creatures_count,
+        "drivers_loaded": creatures_count
     }

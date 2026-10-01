@@ -1,5 +1,5 @@
 """
-AlgoRacers — Pack Purchase Pipeline & NFT Delivery Test Suite
+Pokédex — Pack Purchase Pipeline & NFT Delivery Test Suite
 =============================================================
 Tests:
   1. Invalid pack returns 400 Bad Request

@@ -1,0 +1,59 @@
+{
+  "name": "Glacioron \u2014 AlgoCreatures Genesis (#017)",
+  "description": "Glacioron (Glacier) \u2014 Glacial armored warrior wielding crystalline ice shards with lethal precision.",
+  "image": "ipfs://bafybeicreaturesgenesis2026series1/creature_017.png",
+  "image_mimetype": "image/png",
+  "external_url": "https://algocreatures.io/species/glacioron",
+  "properties": {
+    "species_id": "glacioron",
+    "index_number": 17,
+    "species_name": "Glacioron",
+    "primary_type": "Ice",
+    "secondary_type": null,
+    "faction": "Glacier",
+    "rarity": "Rare",
+    "evolution_family": "frostkit_line",
+    "evolution_stage": 2,
+    "next_evolution_id": "blizzardfang",
+    "generation": "Genesis Series 1",
+    "standard": "ARC-3"
+  },
+  "attributes": [
+    {
+      "trait_type": "Primary Type",
+      "value": "Ice"
+    },
+    {
+      "trait_type": "Faction",
+      "value": "Glacier"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Rare"
+    },
+    {
+      "trait_type": "Evolution Stage",
+      "value": "Stage 2"
+    },
+    {
+      "trait_type": "HP",
+      "value": 82
+    },
+    {
+      "trait_type": "Attack",
+      "value": 85
+    },
+    {
+      "trait_type": "Defense",
+      "value": 88
+    },
+    {
+      "trait_type": "Speed",
+      "value": 83
+    },
+    {
+      "trait_type": "Stamina",
+      "value": 86
+    }
+  ]
+}

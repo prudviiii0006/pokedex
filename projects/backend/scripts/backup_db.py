@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AlgoRacers — Session 22: Database Backup CLI
+Pokédex — Database Backup CLI
 Module: backend/scripts/backup_db.py
 ====================================
 Creates a safe logical snapshot of the database.
@@ -19,11 +19,11 @@ from backend.app.core.database import DB_PATH
 
 def backup_database(destination: str = None):
     print("=" * 75)
-    print("🏎️  ALGORACERS — DATABASE BACKUP UTILITY")
+    print("⚡  POKÉDEX — DATABASE BACKUP UTILITY")
     print("=" * 75)
 
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
-    backup_file = Path(destination) if destination else DB_PATH.parent / f"algoracers_backup_{timestamp}.db"
+    backup_file = Path(destination) if destination else DB_PATH.parent / f"pokedex_backup_{timestamp}.db"
 
     shutil.copy2(DB_PATH, backup_file)
     print(f"✅ Source Database:  {DB_PATH}")

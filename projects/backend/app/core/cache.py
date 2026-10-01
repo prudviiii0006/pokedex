@@ -1,9 +1,9 @@
 """
-AlgoRacers — Session 22: Safe Cache-Aside Engine
+Pokédex — Safe Cache-Aside Engine
 Module: core/cache.py
 =================================================
 Implements safe cache-aside pattern for immutable IPFS metadata,
-static configurations, and verified season leaderboards with automatic DB fallback.
+static configurations, and verified game collections with automatic DB fallback.
 """
 
 import json
@@ -13,7 +13,7 @@ from typing import Any, Optional, Callable
 
 from backend.app.core.database import get_db
 
-logger = logging.getLogger("algoracers.core.cache")
+logger = logging.getLogger("pokedex.core.cache")
 
 class SafeCache:
     def get_or_set(

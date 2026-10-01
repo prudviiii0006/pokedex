@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <!-- Outline circle -->
+  <circle cx="24" cy="24" r="22" fill="#1a1a1a" />
+  <!-- Red upper half -->
+  <path d="M2 24 A22 22 0 0 1 46 24 Z" fill="#E63946" />
+  <!-- White lower half -->
+  <path d="M2 24 A22 22 0 0 0 46 24 Z" fill="#F8F9FA" />
+  <!-- Black horizontal band -->
+  <rect x="2" y="21" width="44" height="6" fill="#1a1a1a" />
+  <!-- Center button outer ring (black) -->
+  <circle cx="24" cy="24" r="7" fill="#1a1a1a" />
+  <!-- Center button inner white -->
+  <circle cx="24" cy="24" r="5" fill="#F8F9FA" />
+</svg>

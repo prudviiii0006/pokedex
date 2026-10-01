@@ -1,0 +1,59 @@
+{
+  "name": "Aquafox \u2014 AlgoCreatures Genesis (#004)",
+  "description": "Aquafox (Hydra) \u2014 Graceful river dweller known for swift hydro-jets and playful whirlpool tactics.",
+  "image": "ipfs://bafybeicreaturesgenesis2026series1/creature_004.png",
+  "image_mimetype": "image/png",
+  "external_url": "https://algocreatures.io/species/aquafox",
+  "properties": {
+    "species_id": "aquafox",
+    "index_number": 4,
+    "species_name": "Aquafox",
+    "primary_type": "Water",
+    "secondary_type": null,
+    "faction": "Hydra",
+    "rarity": "Common",
+    "evolution_family": "aquafox_line",
+    "evolution_stage": 1,
+    "next_evolution_id": "tidalsurge",
+    "generation": "Genesis Series 1",
+    "standard": "ARC-3"
+  },
+  "attributes": [
+    {
+      "trait_type": "Primary Type",
+      "value": "Water"
+    },
+    {
+      "trait_type": "Faction",
+      "value": "Hydra"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Common"
+    },
+    {
+      "trait_type": "Evolution Stage",
+      "value": "Stage 1"
+    },
+    {
+      "trait_type": "HP",
+      "value": 74
+    },
+    {
+      "trait_type": "Attack",
+      "value": 70
+    },
+    {
+      "trait_type": "Defense",
+      "value": 72
+    },
+    {
+      "trait_type": "Speed",
+      "value": 82
+    },
+    {
+      "trait_type": "Stamina",
+      "value": 76
+    }
+  ]
+}

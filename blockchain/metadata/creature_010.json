@@ -1,0 +1,59 @@
+{
+  "name": "Sparkpup \u2014 AlgoCreatures Genesis (#010)",
+  "description": "Sparkpup (Volt) \u2014 Energetic canine charged with static electricity, dashing across arenas at blinding speed.",
+  "image": "ipfs://bafybeicreaturesgenesis2026series1/creature_010.png",
+  "image_mimetype": "image/png",
+  "external_url": "https://algocreatures.io/species/sparkpup",
+  "properties": {
+    "species_id": "sparkpup",
+    "index_number": 10,
+    "species_name": "Sparkpup",
+    "primary_type": "Electric",
+    "secondary_type": null,
+    "faction": "Volt",
+    "rarity": "Common",
+    "evolution_family": "sparkpup_line",
+    "evolution_stage": 1,
+    "next_evolution_id": "voltpaw",
+    "generation": "Genesis Series 1",
+    "standard": "ARC-3"
+  },
+  "attributes": [
+    {
+      "trait_type": "Primary Type",
+      "value": "Electric"
+    },
+    {
+      "trait_type": "Faction",
+      "value": "Volt"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Common"
+    },
+    {
+      "trait_type": "Evolution Stage",
+      "value": "Stage 1"
+    },
+    {
+      "trait_type": "HP",
+      "value": 68
+    },
+    {
+      "trait_type": "Attack",
+      "value": 78
+    },
+    {
+      "trait_type": "Defense",
+      "value": 64
+    },
+    {
+      "trait_type": "Speed",
+      "value": 92
+    },
+    {
+      "trait_type": "Stamina",
+      "value": 72
+    }
+  ]
+}

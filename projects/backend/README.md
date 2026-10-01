@@ -1,11 +1,9 @@
-# AlgoRacers — Backend (FastAPI)
+# Pokédex — Backend (FastAPI)
 
-This directory will host the FastAPI service for AlgoRacers.
+FastAPI service for the Pokédex on-chain digital collectible platform.
 
 ## Responsibilities
-- **Game Engine & Simulation**: Deterministic race simulation incorporating driver stats (Speed, Handling, Focus, Stamina).
-- **Pack Distribution Logic**: Rarity roll calculations and unminted/minted pack management.
-- **x402 Micropayment Protocol**: Handle `402 Payment Required` headers and verify incoming Algorand transaction proofs.
-- **Metadata Server**: Serve ARC-compliant JSON metadata for minted drivers and assets.
-
-*Implementation begins in Session 6.*
+- **Core Engine & Battles**: Tactical battle simulation incorporating Pokémon stats and elemental multipliers.
+- **Pack Distribution Logic**: Provably fair rarity roll calculations across the 247-species master catalog.
+- **x402 Micropayment Protocol**: Algorand TestNet challenge negotiation and settlement verification.
+- **NFT Minting & Delivery**: Authentic ARC-3 ASA creation and atomic delivery state machine.

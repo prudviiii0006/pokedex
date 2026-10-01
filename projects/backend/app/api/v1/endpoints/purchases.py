@@ -1,5 +1,5 @@
 """
-AlgoRacers — Pack Purchases & NFT Delivery Endpoints
+Pokédex — Pack Purchases & NFT Delivery Endpoints
 Module: api/v1/endpoints/purchases.py
 =====================================================
 REST endpoints for initiating pack purchases, fast checkout,
@@ -38,11 +38,13 @@ async def create_purchase(body: PurchaseIntentRequest = Body(...)):
         idempotency_key=body.idempotency_key
     )
 
+from decimal import Decimal
+
 @router.post(
     "/pay/purchases/{purchase_id}",
     response_model=PurchaseResponse,
     summary="x402 Pack Purchase Payment Resource",
-    description="x402 protected resource endpoint for settling pack purchases using Algorand TestNet USDC."
+    description="x402 protected resource endpoint for settling pack purchases using native Algorand ALGO."
 )
 async def pay_for_purchase(
     request: Request,
@@ -55,10 +57,11 @@ async def pay_for_purchase(
     if purchase.status not in [PurchaseStatus.PAYMENT_REQUIRED, PurchaseStatus.CREATED]:
         return purchase
 
-    # Determine required price in micro-USDC (6 decimals)
-    amount_micro_usdc = int(purchase.price_usdc * 1_000_000)
+    # Determine required price in microAlgos (6 decimals, safe Decimal arithmetic)
+    price_algo_decimal = Decimal(str(purchase.price_algo if hasattr(purchase, 'price_algo') and purchase.price_algo is not None else (purchase.price_usdc or 0.1)))
+    amount_microalgos = int(price_algo_decimal * Decimal("1000000"))
     resource_url = str(request.url)
-    description = f"AlgoRacers Pack Purchase — {purchase.pack_id.capitalize()} Pack ({purchase.purchase_id})"
+    description = f"Pokédex Pack Purchase — {purchase.pack_id.capitalize()} Pack ({purchase.purchase_id})"
 
     payment_header = (
         request.headers.get("payment-signature") or 
@@ -71,7 +74,7 @@ async def pay_for_purchase(
         challenge = x402_service.generate_challenge(
             resource_url=resource_url,
             description=description,
-            amount_micro_usdc=amount_micro_usdc
+            amount_microalgos=amount_microalgos
         )
         b64_challenge = base64.b64encode(json.dumps(challenge).encode('utf-8')).decode('utf-8')
         
@@ -91,17 +94,21 @@ async def pay_for_purchase(
     receipt = x402_service.verify_and_settle(
         payment_header=payment_header,
         resource_url=resource_url,
-        required_amount_micro_usdc=amount_micro_usdc
+        required_amount_microalgos=amount_microalgos
     )
 
     b64_receipt = base64.b64encode(json.dumps(receipt).encode('utf-8')).decode('utf-8')
     response.headers["payment-response"] = b64_receipt
+    response.headers["x402-status"] = "x402 Payment Successful"
+    response.headers["x-payment-response"] = "x402 Payment Successful"
+    response.headers["Access-Control-Expose-Headers"] = "*, payment-required, payment-response, x402-status, x-payment-response, WWW-Authenticate"
 
     # Confirm purchase payment and trigger reward engine & NFT minting
     confirmed_purchase = purchase_service.confirm_purchase_payment(
         purchase_id=purchase_id,
         payment_tx_id=receipt.get("transaction")
     )
+    confirmed_purchase.x402_status = "x402 Payment Successful"
     return confirmed_purchase
 
 @router.get(
@@ -113,19 +120,22 @@ async def get_internal_payment_requirements(
     purchase_id: str = Path(..., examples=["pur_f47ac10b58cc"])
 ):
     purchase = purchase_service.get_purchase(purchase_id)
-    micro_units = int(purchase.price_usdc * 1_000_000)
+    price_algo_decimal = Decimal(str(purchase.price_algo if hasattr(purchase, 'price_algo') and purchase.price_algo is not None else (purchase.price_usdc or 0.1)))
+    micro_units = int(price_algo_decimal * Decimal("1000000"))
+    price_algo_float = float(price_algo_decimal)
     return {
         "purchase_id": purchase.purchase_id,
         "pack_id": purchase.pack_id,
         "wallet_address": purchase.wallet_address,
-        "amount": purchase.price_usdc,
-        "price_usdc": purchase.price_usdc,
-        "price": f"${purchase.price_usdc}",
-        "amount_micro_usdc": micro_units,
+        "amount": price_algo_float,
+        "price_algo": price_algo_float,
+        "price": f"{price_algo_float} ALGO",
+        "amount_microalgo": micro_units,
         "network": "algorand-testnet",
         "network_caip2": "algorand:SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=",
-        "asset": "USDC",
-        "asset_id": 10458941,
+        "currency": "ALGO",
+        "asset": "ALGO",
+        "asset_id": 0,
         "pay_to": "GZSTVC3KHF3QQ77CCQFHXL3CYFCM4ANFRJOIC3TUHQKI2STM25BC7IAZU4",
         "status": purchase.status.value
     }
@@ -160,17 +170,18 @@ async def direct_purchase_pack(body: PurchaseIntentRequest = Body(...)):
     "/purchases/{purchase_id}/complete",
     response_model=PurchaseResponse,
     summary="Complete Pack Purchase",
-    description="Completes an initiated purchase intent, rolling rewards and minting NFT."
+    description="Returns the completed purchase if confirmed. Unpaid purchases are rejected with 402 Payment Required."
 )
 async def complete_purchase_intent(
     purchase_id: str = Path(..., examples=["pur_f47ac10b58cc"])
 ):
     purchase = purchase_service.get_purchase(purchase_id)
-    return purchase_service.complete_direct_purchase(
-        pack_id=purchase.pack_id,
-        wallet_address=purchase.wallet_address,
-        idempotency_key=purchase.idempotency_key
-    )
+    if purchase.status in [PurchaseStatus.CREATED, PurchaseStatus.PAYMENT_REQUIRED] or purchase.payment_status != "SETTLED_ON_ALGORAND_TESTNET":
+        raise HTTPException(
+            status_code=status.HTTP_402_PAYMENT_REQUIRED,
+            detail="Payment not confirmed. Payment via connected Pera Wallet is mandatory before reward generation."
+        )
+    return purchase
 
 @router.post(
     "/packs/{pack_id}/purchase",
@@ -208,6 +219,12 @@ async def get_purchase(
 async def claim_delivery(
     purchase_id: str = Path(..., examples=["pur_f47ac10b58cc"])
 ):
+    purchase = purchase_service.get_purchase(purchase_id)
+    if purchase.status in [PurchaseStatus.CREATED, PurchaseStatus.PAYMENT_REQUIRED] or purchase.payment_status != "SETTLED_ON_ALGORAND_TESTNET":
+        raise HTTPException(
+            status_code=status.HTTP_402_PAYMENT_REQUIRED,
+            detail="Payment not confirmed. Cannot claim NFT delivery for unpaid purchase."
+        )
     return purchase_service.claim_nft_delivery(purchase_id)
 
 @router.get(

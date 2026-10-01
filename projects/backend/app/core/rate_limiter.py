@@ -1,5 +1,5 @@
 """
-AlgoRacers — Session 23: In-Memory Sliding Window Rate Limiter
+Pokédex — In-Memory Sliding Window Rate Limiter
 Module: core/rate_limiter.py
 ==============================================================
 Provides tiered per-IP and per-Wallet sliding-window rate limiting
@@ -12,7 +12,7 @@ from typing import Dict, List, Optional, Tuple
 from fastapi import Request, HTTPException, status, Depends
 from backend.app.core.security import get_optional_wallet
 
-logger = logging.getLogger("algoracers.security.ratelimit")
+logger = logging.getLogger("pokedex.security.ratelimit")
 
 class SlidingWindowRateLimiter:
     def __init__(self):

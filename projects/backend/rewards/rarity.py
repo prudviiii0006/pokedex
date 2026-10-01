@@ -1,5 +1,5 @@
 """
-AlgoRacers — Session 5: Pack & Reward System
+Pokédex — Pack & Reward System
 Module: rarity.py
 ============================================
 Implements transparent weighted random selection for pack rarity tiers.

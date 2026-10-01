@@ -25,11 +25,11 @@ COPY backend /app/backend
 COPY blockchain /app/blockchain
 
 # Create unprivileged application user
-RUN useradd -m -u 1000 algoracer && \
+RUN useradd -m -u 1000 pokedex && \
     mkdir -p /app/backend/data && \
-    chown -R algoracer:algoracer /app
+    chown -R pokedex:pokedex /app
 
-USER algoracer
+USER pokedex
 
 # Expose standard FastAPI HTTP port
 EXPOSE 8000

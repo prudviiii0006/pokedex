@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-AlgoRacers — Session 17: IPFS Metadata Verification Script
+Pokédex — IPFS Metadata Verification Script
 Module: blockchain/scripts/verify_ipfs_metadata.py
 ==========================================================
 Verifies that metadata retrieved from an IPFS CID or local file
 strictly matches its cryptographic content identifier, follows schema,
 and contains valid nested image references.
-Usage: python verify_ipfs_metadata.py <driver_id_or_cid>
+Usage: python verify_ipfs_metadata.py <creature_id_or_cid>
 """
 
 import sys
@@ -26,7 +26,7 @@ MANIFEST_PATH = METADATA_DIR / "manifest.json"
 
 def verify_driver_metadata(target: str) -> bool:
     print("=" * 75)
-    print(f"🏎️  ALGORACERS — IPFS METADATA INTEGRITY VERIFIER")
+    print(f"⚡  POKÉDEX — IPFS METADATA INTEGRITY VERIFIER")
     print(f"🔍 Target Identifier: {target}")
     print("=" * 75)
 

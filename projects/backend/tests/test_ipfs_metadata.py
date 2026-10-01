@@ -1,5 +1,5 @@
 """
-AlgoRacers — Session 17: IPFS, Content Addressing & Metadata Integrity Tests
+Pokédex — IPFS, Content Addressing & Metadata Integrity Tests
 ============================================================================
 Test Suite:
   1. Cryptographic hashing & avalanche effect
@@ -20,8 +20,11 @@ import pytest
 
 cand_root = Path(__file__).resolve().parent.parent.parent.parent
 root_dir = cand_root if (cand_root / "blockchain").exists() else Path(__file__).resolve().parent.parent.parent
+projects_dir = root_dir / "projects" if (root_dir / "projects").exists() else root_dir
 if str(root_dir) not in sys.path:
     sys.path.insert(0, str(root_dir))
+if str(projects_dir) not in sys.path:
+    sys.path.insert(0, str(projects_dir))
 
 from blockchain.scripts.cid_utils import compute_cid_v1, canonical_json_bytes, verify_cid
 from blockchain.scripts.build_metadata import validate_metadata_schema
@@ -30,8 +33,8 @@ from backend.app.services.metadata_service import metadata_service
 
 def test_sha256_cryptographic_properties():
     """Test 1: SHA-256 is deterministic and exhibits avalanche effect on one-byte change."""
-    t1 = b"AlgoRacers"
-    t2 = b"algoracers"
+    t1 = b"Pokedex"
+    t2 = b"pokedex"
 
     h1 = hashlib.sha256(t1).hexdigest()
     h2 = hashlib.sha256(t2).hexdigest()
@@ -65,7 +68,7 @@ def test_canonical_json_key_order_independence():
 def test_metadata_schema_validation_accepts_valid():
     """Test 4: Valid ARC-3 metadata passes schema validation."""
     valid_meta = {
-        "name": "AlgoRacer #001",
+        "name": "Pokédex #001",
         "description": "Velocity One",
         "image": "ipfs://bafkreia3vnoeexpsbnilmcjrjtsd3bomvsbk4h7ufmgnugypcrfqoooj4u",
         "image_mimetype": "image/png",
@@ -139,18 +142,19 @@ def test_metadata_schema_validation_rejects_out_of_bounds_stats():
         validate_metadata_schema(invalid_meta, "driver_op.json")
 
 def test_manifest_integrity_and_cids():
-    """Test 7: Collection manifest contains all 22 drivers with valid metadata CIDs."""
+    """Test 7: Collection manifest contains all 24 creatures with valid metadata CIDs."""
     manifest_path = root_dir / "blockchain" / "metadata" / "manifest.json"
     assert manifest_path.exists()
 
     with open(manifest_path, "r", encoding="utf-8") as f:
         manifest = json.load(f)
 
-    assert len(manifest["drivers"]) == 22
-    for driver_key, d_info in manifest["drivers"].items():
-        assert d_info["metadata_cid"].startswith("bafkre")
-        assert d_info["image_cid"].startswith("bafkre")
-        assert d_info["metadata_uri"].endswith("#arc3")
+    creature_entries = manifest.get("creatures", manifest.get("drivers", {}))
+    assert len(creature_entries) == 24
+    for c_key, c_info in creature_entries.items():
+        assert c_info["metadata_cid"].startswith("bafkre")
+        assert c_info["image_uri"].startswith("ipfs://")
+        assert c_info["metadata_uri"].endswith("#arc3")
 
 def test_multi_gateway_url_resolution():
     """Test 8: IPFS URI resolution to HTTP gateways."""

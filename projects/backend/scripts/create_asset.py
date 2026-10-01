@@ -1,10 +1,10 @@
 """
-AlgoRacers — Session 2: Algorand Standard Assets (ASAs)
+Pokédex — Algorand Standard Assets (ASAs)
 Script: create_asset.py
 =======================================================
 Creates a fungible Layer-1 token on Algorand TestNet:
-  • Name: AlgoRacer Credits
-  • Unit: ARC
+  • Name: Pokédex Credits
+  • Unit: PKDX
   • Total Supply: 1,000 units
   • Decimals: 0
 Demonstrates AssetConfigTxn, asset ID extraction, and on-chain inspection.
@@ -28,7 +28,7 @@ def get_algod_client() -> algod.AlgodClient:
 
 def main():
     print("=" * 65)
-    print("🏎️  ALGORACERS — CREATE FUNGIBLE ASSET (ASA)")
+    print("⚡  POKÉDEX — CREATE FUNGIBLE ASSET (ASA)")
     print("=" * 65)
 
     client = get_algod_client()
@@ -64,9 +64,9 @@ def main():
     # 3. Define Asset Parameters & Construct AssetConfigTxn
     total_supply = 1000
     decimals = 0
-    unit_name = "ARC"
-    asset_name = "AlgoRacer Credits"
-    asset_url = "https://algoracers.io/assets/arc.json"
+    unit_name = "PKDX"
+    asset_name = "Pokédex Credits"
+    asset_url = "https://pokedex.io/assets/token.json"
 
     print("\n[Step 2: Constructing AssetConfigTxn]")
     print(f"   • Asset Name:    {asset_name}")

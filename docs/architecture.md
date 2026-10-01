@@ -1,4 +1,4 @@
-# AlgoRacers — Comprehensive System Architecture & Threat Model
+# Pokédex — Comprehensive System Architecture & Threat Model
 
 ---
 
