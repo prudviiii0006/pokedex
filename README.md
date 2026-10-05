@@ -88,6 +88,28 @@ PEER-TO-PEER TRADING POST (Card-for-Card Swaps)
 
 ---
 
+## 📁 Repository Structure
+
+```text
+pokedex/
+├── projects/
+│   ├── frontend/            # React + Vite + TypeScript web application
+│   ├── backend/             # FastAPI REST API, reward engine, database & test suite
+│   └── smart-contracts/     # AlgoKit Python smart contracts (PokedexRegistry)
+├── blockchain/
+│   ├── metadata/            # ARC-3 JSON metadata for Pokémon collectibles
+│   └── scripts/             # CID computation, IPFS metadata & verification tools
+├── docs/
+│   ├── architecture.md      # System architecture and data flow
+│   ├── final-architecture.md# Complete end-to-end component specifications
+│   ├── ipfs-metadata.md     # IPFS content addressing and metadata standards
+│   ├── security.md          # Input guards, rate limiting, and replay defense
+│   └── reference/           # Reference examples and educational tutorials
+└── package.json             # Root unified workspace runner
+```
+
+---
+
 ## 🐉 Canonical Pokémon Species Roster
 
 Pokédex features **24 canonical Pokémon species** across **8 distinct elemental lines** with official artwork from PokéAPI:
@@ -164,31 +186,37 @@ The trustless trading station enables trainers to post card-for-card swap offers
 - **Node.js**: `v20+` with `npm` / `pnpm`
 - **Pera Mobile Wallet** with Algorand TestNet enabled
 
-### 1. Backend Server Setup
+### Quick Start with Root Commands
+From the workspace root:
+
 ```bash
-# Navigate to backend
+# 1. Start Pokédex Backend (Port 8001)
+npm run backend:start
+
+# 2. Start Pokédex Frontend (Port 5173)
+npm run frontend:dev
+
+# 3. Run Backend Test Suite (110 tests)
+npm run test:backend
+```
+
+### Manual Directory Setup
+
+#### 1. Backend Server Setup
+```bash
 cd projects/backend
-
-# Install dependencies
 pip install -r requirements.txt
-
-# Start FastAPI server on port 8000
-python3 -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000
+npm start    # Launches uvicorn on port 8001
 ```
 
-### 2. Frontend Application Setup
+#### 2. Frontend Application Setup
 ```bash
-# Navigate to frontend
 cd projects/frontend
-
-# Install dependencies
 npm install
-
-# Start Vite dev server on port 5173
-npm run dev
+npm run dev  # Launches Vite dev server on port 5173
 ```
 
-### 3. Run Test Suite
+#### 3. Run Test Suite
 ```bash
 cd projects/backend
 pytest -v

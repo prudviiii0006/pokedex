@@ -9,10 +9,7 @@
     "backend:dev": "npm --prefix projects/backend run dev",
     "backend:start": "npm --prefix projects/backend run start",
     "test:backend": "pytest projects/backend/tests/ -v",
-    "test:metadata": "pytest projects/backend/tests/test_ipfs_metadata.py -v",
-    "x402:install": "pnpm install -r",
-    "x402:tutorial:server": "pnpm --filter x402-server start",
-    "x402:tutorial:client": "pnpm --filter x402-client start"
+    "test:metadata": "pytest projects/backend/tests/test_ipfs_metadata.py -v"
   },
   "dependencies": {
     "@hono/node-server": "^2.1.1",
