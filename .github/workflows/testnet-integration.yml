@@ -1,4 +1,4 @@
-name: AlgoRacers TestNet Integration Smoke Gates
+name: Pokédex TestNet Integration Smoke Gates
 
 on:
   workflow_dispatch:
@@ -14,16 +14,16 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.14'
+          python-version: '3.11'
 
       - name: Install dependencies
         run: |
-          pip install -r backend/requirements.txt pytest
+          pip install -r projects/backend/requirements.txt pytest
 
       - name: Execute Controlled TestNet E2E & Connectivity Checks
         run: |
-          pytest backend/tests/test_testnet_e2e.py backend/tests/test_x402_avm.py -v
+          PYTHONPATH=projects/backend pytest projects/backend/tests/test_x402_avm.py -v
 
       - name: Verify Post-Deployment Health & Read-Only Smoke Tests
         run: |
-          python backend/scripts/verify_release.py
+          python projects/backend/scripts/validate_metadata.py

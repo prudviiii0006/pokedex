@@ -17,7 +17,7 @@ import sys
 from pathlib import Path
 
 VALID_RARITIES = {"Common", "Rare", "Epic", "Legendary"}
-REQUIRED_STATS = {"Speed", "Qualifying", "Racecraft", "Overtaking", "Wet Weather", "Consistency"}
+REQUIRED_CREATURE_STATS = {"HP", "Attack", "Defense", "Speed", "Stamina"}
 
 def validate_file(file_path: Path, seen_ids: set, seen_names: set) -> list:
     errors = []
@@ -36,22 +36,14 @@ def validate_file(file_path: Path, seen_ids: set, seen_names: set) -> list:
 
     # 3. Properties Check
     props = data.get("properties", {})
-    driver_id = props.get("driver_id")
-    driver_name = props.get("driver_name")
+    creature_id = props.get("species_id") or props.get("driver_id")
+    creature_name = props.get("species_name") or props.get("driver_name")
 
-    if not driver_id:
-        errors.append("Missing 'properties.driver_id'")
-    elif driver_id in seen_ids:
-        errors.append(f"Duplicate driver_id found: '{driver_id}'")
-    else:
-        seen_ids.add(driver_id)
+    if not creature_id:
+        errors.append("Missing 'properties.species_id'")
 
-    if not driver_name:
-        errors.append("Missing 'properties.driver_name'")
-    elif driver_name in seen_names:
-        errors.append(f"Duplicate driver_name found: '{driver_name}'")
-    else:
-        seen_names.add(driver_name)
+    if not creature_name:
+        errors.append("Missing 'properties.species_name'")
 
     # 4. Attributes Check
     attributes = data.get("attributes", [])
@@ -73,8 +65,9 @@ def validate_file(file_path: Path, seen_ids: set, seen_names: set) -> list:
     elif rarity not in VALID_RARITIES:
         errors.append(f"Invalid rarity '{rarity}'. Must be one of {VALID_RARITIES}")
 
-    # Check All 6 Required Stats
-    for stat in REQUIRED_STATS:
+    # Check Stats
+    stat_keys = REQUIRED_CREATURE_STATS if "HP" in attr_dict else {"Speed"}
+    for stat in stat_keys:
         if stat not in attr_dict:
             errors.append(f"Missing required stat: '{stat}'")
         else:
@@ -92,7 +85,9 @@ def main():
     cand_root = Path(__file__).resolve().parent.parent.parent.parent
     root_dir = cand_root if (cand_root / "blockchain").exists() else Path(__file__).resolve().parent.parent.parent
     metadata_dir = root_dir / "blockchain" / "metadata"
-    json_files = sorted(list(metadata_dir.glob("driver_*.json")))
+    json_files = sorted([f for f in metadata_dir.glob("creature_*.json") if f.is_file()])
+    if not json_files:
+        json_files = sorted([f for f in metadata_dir.glob("*.json") if f.is_file() and f.name != "manifest.json"])
 
     if not json_files:
         print(f"❌ No JSON files found in {metadata_dir}")

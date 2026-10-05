@@ -38,6 +38,7 @@ wheels/
 *.db
 *.sqlite
 *.sqlite3
+blockchain/metadata/generated/
 
 # Node.js
 node_modules/
