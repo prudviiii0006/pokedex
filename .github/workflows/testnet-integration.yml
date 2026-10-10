@@ -22,7 +22,7 @@ jobs:
 
       - name: Execute Controlled TestNet E2E & Connectivity Checks
         run: |
-          PYTHONPATH=projects/backend pytest projects/backend/tests/test_x402_avm.py -v
+          PYTHONPATH=projects/backend pytest projects/backend/tests/test_testnet_e2e.py projects/backend/tests/test_x402_payments.py -v
 
       - name: Verify Post-Deployment Health & Read-Only Smoke Tests
         run: |
