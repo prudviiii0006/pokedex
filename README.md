@@ -224,6 +224,50 @@ pytest -v
 
 ---
 
+## 🌐 Production & Cloud Deployment Guide
+
+Pokédex is architected for seamless multi-platform cloud deployment:
+
+### 1. Frontend Deployment (Vercel / Netlify)
+- **Framework Preset**: Vite
+- **Root Directory**: `projects/frontend` (or keep `./` with the included [`vercel.json`](file:///Users/prudvi/programming%20/projects/pokedex/projects/frontend/vercel.json))
+- **Build Command**: `npm run build` (or `npm --prefix projects/frontend run build`)
+- **Output Directory**: `dist` (or `projects/frontend/dist`)
+- **Environment Variables**:
+  - `VITE_API_BASE_URL`: URL of your deployed backend (e.g. `https://pokedex-api.onrender.com` or `http://localhost:8001`)
+  - `VITE_NETWORK`: `testnet`
+  - `VITE_ALGOD_NODE`: `https://testnet-api.algonode.cloud`
+  - `VITE_INDEXER_NODE`: `https://testnet-idx.algonode.cloud`
+
+### 2. Backend Container Deployment (Docker / Railway / Render / Fly.io)
+The repository includes a production-ready multi-platform [`Dockerfile`](file:///Users/prudvi/programming%20/projects/pokedex/Dockerfile) with dynamic `$PORT` handling and healthchecks:
+
+```bash
+# Build the container
+docker build -t pokedex-backend .
+
+# Run the container
+docker run -p 8001:8000 -e PORT=8000 -e NETWORK=testnet pokedex-backend
+```
+
+Or deploy both backend and persistent volume with **Docker Compose**:
+```bash
+docker compose up -d
+```
+
+### 3. Key Environment Variables
+
+| Variable | Description | Default |
+| :--- | :--- | :--- |
+| `NETWORK` | Algorand network target | `testnet` |
+| `PORT` | ASGI server port | `8000` (or `8001` local) |
+| `ALGOD_ADDRESS` | Algorand node RPC endpoint | `https://testnet-api.algonode.cloud` |
+| `INDEXER_ADDRESS` | Algorand Indexer RPC endpoint | `https://testnet-idx.algonode.cloud` |
+| `PAYMENT_RECEIVER_ADDRESS`| Algorand TestNet treasury account | `3VZQZ4J4YRJBI...` |
+| `VITE_API_BASE_URL` | Frontend API backend endpoint | `http://127.0.0.1:8001` |
+
+---
+
 ## 🔒 Security & Provenance Guardrails
 
 - **Backend-Authoritative RNG**: Stats, rarities, battle outcomes, and evolution thresholds are strictly calculated and validated on the backend.

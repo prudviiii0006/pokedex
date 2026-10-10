@@ -259,7 +259,7 @@ def init_db():
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_finput_asset ON fusion_inputs(input_asset_id);")
 
         conn.commit()
-        logger.info(f"AlgoCreatures SQLite Database initialized at: {DB_PATH}")
+        logger.info(f"Pokédex SQLite Database initialized at: {DB_PATH}")
 
 @contextmanager
 def get_db():

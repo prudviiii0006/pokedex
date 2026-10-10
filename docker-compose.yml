@@ -1,0 +1,24 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pokedex-backend
+    ports:
+      - "8001:8000"
+    environment:
+      - PORT=8000
+      - NETWORK=testnet
+      - ALGOD_ADDRESS=https://testnet-api.algonode.cloud
+      - INDEXER_ADDRESS=https://testnet-idx.algonode.cloud
+    volumes:
+      - pokedex-data:/app/backend/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/ready"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  pokedex-data:

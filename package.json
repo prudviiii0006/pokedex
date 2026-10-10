@@ -4,6 +4,8 @@
   "private": true,
   "description": "Pokédex — 1-of-1 Digital Pokémon Collectibles on Algorand",
   "scripts": {
+    "build": "npm --prefix projects/frontend run build",
+    "start": "npm --prefix projects/backend run start",
     "frontend:dev": "npm --prefix projects/frontend run dev",
     "frontend:build": "npm --prefix projects/frontend run build",
     "backend:dev": "npm --prefix projects/backend run dev",
