@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: pokedex-backend
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free
+    region: oregon
+    envVars:
+      - key: NETWORK
+        value: testnet
+      - key: PORT
+        value: "8000"
+      - key: ALGOD_ADDRESS
+        value: https://testnet-api.algonode.cloud
+      - key: INDEXER_ADDRESS
+        value: https://testnet-idx.algonode.cloud
+    healthCheckPath: /ready
